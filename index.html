@@ -1,11 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
+<meta charset="UTF-8" />
 <title>Random Affirmation</title>
 <style>
+@font-face {
+  font-family: 'Nunito';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/nunito/v32/XRXI3I6Li01BKofiOc5wtlZ2di8HDLshdTQ3jw.woff2) format('woff2');
+}
 *{box-sizing:border-box;}
-body { font-family: Lato, sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: #E6ECFA;}
+body { font-family: 'Nunito', Lato, sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: #E6ECFA;}
 .main-container{display:flex; justify-content: center; height: 100vh; align-items: center;}
 .main-container div{}
 </style>
@@ -17,8 +23,8 @@ body { font-family: Lato, sans-serif; font-size: 13px; padding: 0; margin: 0; ba
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" id="designSvg" width="800" height="800" >
       <defs>
         <style id="svg-def-style" type="text/css">
-          .svg-text {
-            font-family: Lato, sans-serif; 
+          .svg-text {            
+            font-family: 'Nunito', Lato, sans-serif; 
             font-size: 110px; 
             fill:#ffffff;
             fill-opacity:0.5;
@@ -29,7 +35,7 @@ body { font-family: Lato, sans-serif; font-size: 13px; padding: 0; margin: 0; ba
             fill-opacity:1; 
             stroke:none; 
             stroke-width:0; 
-            transition: fill 0.5s ease;
+            transition: fill 1s ease;
            }
           .hidden{display:none;}
         </style>
@@ -41,14 +47,17 @@ body { font-family: Lato, sans-serif; font-size: 13px; padding: 0; margin: 0; ba
       <circle id="circleBackground" cx="400" cy="400" r="380" class="svg-circle" fill="#0ea5e9"></circle>
       </g>
       <g id="textLayer">
-      <text id="textMessage" x="400" y="400" class="svg-text">peace</text>
+      <text id="textLine1" x="400" y="400" class="svg-text">feel</text> 
+      <text id="textLine2" x="400" y="400" class="svg-text">peace</text>
       </g>
     </svg>
     </div>
 </div>
 
 <script>
-const textMessage = document.getElementById('textMessage');
+const appData = {fillIndex:0, msgIndex:0};
+const textLine1 = document.getElementById('textLine1');
+const textLine2 = document.getElementById('textLine2');
 const circleBackground = document.getElementById('circleBackground');
 const fill = ['#123456','#561234','#125634','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const messageList = [
@@ -78,16 +87,42 @@ const messageList = [
   'patient',
   'compassionate',
 ];
-const prefixes = ['','be ','feel ']
+const prefixes = ['','be ','feel '];
+
+function getRandomIndex(list, lastIndex){
+  let index = 0;
+  function randomIndex(){
+    return Math.floor(Math.random() * list.length);
+  }
+  for(let i=0; i<10; i++){
+    index = randomIndex();
+    if(index !== lastIndex) return index;
+  }
+  return index;
+}
+
 function changeText(){
+  const seconds = 4;
+  const milliseconds = seconds * 1000;
+  appData.msgIndex = getRandomIndex(messageList, appData.msgIndex);
+  appData.fillIndex = getRandomIndex(fill, appData.fillIndex); 
+  
   const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-  const message = messageList[Math.floor(Math.random() * messageList.length)];
-  textMessage.innerHTML = prefix + message;
-  const fillIndex = Math.floor(Math.random() * fill.length);  
-  const fillColor = fill[fillIndex];
-  //circleBackground.setAttribute('fill', fillColor);
-  circleBackground.style.fill = fillColor;  
-  const timeout = setTimeout(changeText, 2000);
+  const message = messageList[appData.msgIndex];
+  console.log();
+  if(message.length <= 8 || prefix===''){
+    textLine1.innerHTML = '';
+    textLine2.innerHTML = prefix + message;
+    textLine2.setAttribute('y', 400);
+  }else{
+    textLine1.innerHTML = prefix;
+    textLine2.innerHTML = message;
+    textLine1.setAttribute('y', 400-60); 
+    textLine2.setAttribute('y', 400+60); 
+  }
+  const fillColor = fill[appData.fillIndex];
+  circleBackground.style.fill = fillColor;
+  const timeout = setTimeout(changeText, milliseconds);
 }
 
 function init(){  
