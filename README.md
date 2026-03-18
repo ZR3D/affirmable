@@ -6,6 +6,8 @@ Note: to toggle audio click on the background circle.
 
 Try it here: https://zr3d.github.io/random-affirmation/
 
+Written using Geany IDE.
+
 Uses the Nunito Google Font.
 
 Audio created using the WebAudio Api.
