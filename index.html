@@ -4,6 +4,7 @@
 <meta charset="UTF-8" />
 <title>Random Affirmation</title>
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
+<link rel="manifest" href="manifest.json">
 <style>
 @font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
@@ -21,6 +22,7 @@ input[type=number]{width:3rem;}
 .modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
 .modal .close:hover {color:#000;}
 .modal div{margin-bottom:10px;}
+.button-modal-container{text-align: center; margin-top:20px; }
 /* Button */
 button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
 button:hover {background: #5b778d;}
@@ -41,7 +43,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 <body>
 <div id="mainContainer" class="main-container">
     <div id="circleBackground" class="svg-circle">
-      <div id="textLine1" class="svg-text">click circle for settings</div>
+      <div id="affirmationText" class="svg-text">click circle for settings</div>
     </div>
 </div>
 
@@ -80,12 +82,11 @@ input:checked + .slider:before {transform: translateX(25px);}
     </div>
     <div>
       <label class="modal-label">Duration</label>
-      <input id="durationNumber" type="number" value="5" min="1" >
-      <button id="defaultDurationButton">Default Duration</button>
+      <input id="durationNumber" type="number" value="5" min="1" >      
     </div> 
-    <div>
-      <label class="modal-label">&nbsp;</label>
+    <div class="button-modal-container">
       <button class="close-button">Close</button>
+      <button id="resetDefaultsButton">Reset Defaults</button>
     </div>
     </div>
   </div>
@@ -95,7 +96,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 // --- Global Declarations ---
 const appData = {duration:5, waveform:'triangle', darkMode:false, audio:true, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'randomAffirmationData';
-const textLine1 = document.getElementById('textLine1');
+const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
 const circleBackground = document.getElementById('circleBackground');
 const audioSwitch = document.getElementById('audioSwitch');
@@ -108,8 +109,6 @@ const toggleSwitches = document.querySelectorAll('.switch input');
 const startButton = document.getElementById('startButton');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
-const center = {x:400, y:400};
-const lineSpacing = 60;
 const prefixes = ['','be','feel','become','being'];
 const messageList = [
 {message:'ok', prefixes:[], suffixes:[]},
@@ -209,7 +208,7 @@ const messageList = [
 circleBackground.addEventListener('click', () => openModal('settingsModel'));
 waveformSelect.addEventListener('change', () => setWaveform(waveformSelect.value)); //set
 durationNumber.addEventListener('change', () => setDuration(durationNumber.value)); //set
-defaultDurationButton.addEventListener('click',  () => setDuration(5)); //set
+resetDefaultsButton.addEventListener('click', resetDefaults); //set
 startButton.addEventListener('click', begin);
 closeButtons.forEach(closeButton => {
   closeButton.onclick = () => closeModal();
@@ -257,6 +256,25 @@ function setDuration(duration){
   saveLocalStorage();
 }
 
+function setModalProperties(){
+  audioSwitch.checked = appData.audio;
+  darkModeSwitch.checked = appData.darkMode;
+  waveformSelect.value = appData.waveform;
+  durationNumber.value = appData.duration;
+}
+
+function resetDefaults(){
+  appData.audio = true;
+  appData.darkMode = false;
+  appData.waveform = 'triangle';
+  appData.duration = 5;
+  
+  setModalProperties();  
+  
+  setAudio(false);
+  setBackground(false);
+}
+
 // --- Helper Functions ---
 function getRandomIndex(list, lastIndex, uniqueOnly=true){
   // Select Random
@@ -289,7 +307,7 @@ function changeText(){
   const prefix = getPrefix();
   // Message
   const message = messageList[appData.msgIndex].message;
-  textLine1.innerHTML = `${prefix} ${message}`;
+  affirmationText.innerHTML = `${prefix} ${message}`;
   // Color
   const fillColor = fill[appData.fillIndex];
   // Sound
@@ -344,12 +362,8 @@ function saveLocalStorage(){
 }
 
 function onLoad(){
-  //setAudio(false)
-  audioSwitch.checked = appData.audio;
-  darkModeSwitch.checked = appData.darkMode;  
-  setBackground(false);
-  setWaveform(appData.waveform);
-  setDuration(appData.duration);
+  setModalProperties(); 
+  setBackground(false); 
   openModal('beginModel');
 }
 
