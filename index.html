@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Affirmable</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
 <link rel="manifest" href="manifest.json">
 <style>
@@ -17,7 +18,7 @@ input[type=number]{width:3rem;}
 .dark-mode-background-color{background: #414754;}
 /* Modal */
 .modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
-.modal {font-family:sans-serif; background: #f1f1f1; color:#1d3f4c; padding:2rem; border-radius:10px; max-width:400px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
+.modal {font-family:sans-serif; background: #f1f1f1; color:#1d3f4c; padding:2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
 .modal h2 {margin-top:0;}
 .modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
 .modal .close:hover {color:#000;}
@@ -29,8 +30,11 @@ button:hover {background: #5b778d;}
 .start-container{display:flex; justify-content: center;}
 .start-button{width: 200px; height:200px; border-radius: 50%; font-family:'Nunito'; font-size:2rem;}
 .hidden{display:none;}
-.svg-circle {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 760px; height: 760px; border-radius: 50%; justify-content: center; align-items: center;}
-.svg-text { font-family: 'Nunito', sans-serif; font-size:110px; color:#ffffff; opacity:0.5; text-align:center; user-select:none;}
+.svg-circle {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; 
+  width: 90vmin;
+  height: 90vmin; 
+  border-radius: 50%; justify-content: center; align-items: center;}
+.svg-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 10vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none;}
 /* Toggle switch */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
@@ -51,7 +55,7 @@ input:checked + .slider:before {transform: translateX(25px);}
   <div class="modal">
     <div id="beginModel" class="modal-section start-container hidden">
       <button id="startButton" class="start-button">Start</button>
-    </div>    
+    </div>
 
     <div id="settingsModel" class="modal-section hidden">
     <span class="close close-button">&times;</span>
@@ -77,13 +81,13 @@ input:checked + .slider:before {transform: translateX(25px);}
         <option value="sawtooth">Sawtooth</option>
         <option value="sine">Sine</option>
         <option value="square">Square</option>
-        <option value="triangle">Triangle</option>        
+        <option value="triangle">Triangle</option>
       </select>
     </div>
     <div>
       <label class="modal-label">Duration</label>
-      <input id="durationNumber" type="number" value="5" min="1" >      
-    </div> 
+      <input id="durationNumber" type="number" value="5" min="1" >
+    </div>
     <div class="button-modal-container">
       <button class="close-button">Close</button>
       <button id="resetDefaultsButton">Reset Defaults</button>
@@ -138,7 +142,7 @@ const messageList = [
 {message:'floaty', prefixes:[], suffixes:[]},
 {message:'joyful', prefixes:[], suffixes:[]},
 {message:'patient', prefixes:[], suffixes:[]},
-// From Chatty 
+// From Chatty
 {message:'compassionate', prefixes:[], suffixes:[]},
 {message:'settled', prefixes:[], suffixes:[]},
 {message:'steady', prefixes:[], suffixes:[]},
@@ -221,7 +225,7 @@ toggleSwitches.forEach(toggleSwitch => {
 function toggleSetting(val, name){
   appData[name] = val;
   if(name==='audio') setAudio(false);
-  if(name==='darkMode') setBackground(false); 
+  if(name==='darkMode') setBackground(false);
  }
 
 function setAudio(toggle){
@@ -233,7 +237,7 @@ function setAudio(toggle){
 }
 
 function setBackground(toggle){
-  if(toggle) appData.darkMode = !appData.darkMode;  
+  if(toggle) appData.darkMode = !appData.darkMode;
   if(appData.darkMode){
     mainContainer.classList.add('dark-mode-background-color');
   }else{
@@ -268,9 +272,9 @@ function resetDefaults(){
   appData.darkMode = false;
   appData.waveform = 'triangle';
   appData.duration = 5;
-  
-  setModalProperties();  
-  
+
+  setModalProperties();
+
   setAudio(false);
   setBackground(false);
 }
@@ -292,7 +296,7 @@ function getPrefix(){
   if(messagePrefixes.length>0){
     prefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
   }
-  return prefix; 
+  return prefix;
 }
 
 function changeText(){
@@ -312,7 +316,7 @@ function changeText(){
   const fillColor = fill[appData.fillIndex];
   // Sound
   const frequency = solfeggioFreqs[appData.freqIndex];
-  playTone(frequency, ctx.currentTime, seconds+4);  
+  playTone(frequency, ctx.currentTime, seconds+4);
   circleBackground.style.background = fillColor;
   // Loop
   const timeout = setTimeout(changeText, duration);
@@ -323,7 +327,7 @@ const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 // Master gain to control overall volume
 const master = ctx.createGain();
-master.gain.value = 0.05; 
+master.gain.value = 0.05;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
@@ -358,16 +362,16 @@ function closeModal() {
 // --- localStorage ---
 function saveLocalStorage(){
   const json = JSON.stringify(appData);
-  localStorage.setItem(localStorageName, json);  
+  localStorage.setItem(localStorageName, json);
 }
 
 function onLoad(){
-  setModalProperties(); 
-  setBackground(false); 
+  setModalProperties();
+  setBackground(false);
   openModal('beginModel');
 }
 
-// Begin button as audio requires a user gesture 
+// Begin button as audio requires a user gesture
 function begin(){
   setTimeout(changeText, 4000);
   closeModal();
@@ -393,7 +397,7 @@ function loadLocalStorage(){
 }
 
 function init(){
-  loadLocalStorage();  
+  loadLocalStorage();
 }
 
 init();
