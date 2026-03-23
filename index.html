@@ -11,7 +11,6 @@
 *{box-sizing:border-box;}
 body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background: #E6ECFA;}
 select, input{border-radius: 4px; border:none; padding:0.33rem; background:#fff; margin-right:0.5rem; font-size: 12px;}
-.modal-label{width:90px; display:inline-block; vertical-align: middle;}
 input{font-size: 12px;}
 input[type=number]{width:3rem;}
 .main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease;}
@@ -23,6 +22,7 @@ input[type=number]{width:3rem;}
 .modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
 .modal .close:hover {color:#000;}
 .modal div{margin-bottom:10px;}
+.modal-label{width:90px; display:inline-block; vertical-align: middle;}
 .button-modal-container{text-align: center; margin-top:20px; }
 /* Button */
 button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
@@ -30,11 +30,11 @@ button:hover {background: #5b778d;}
 .start-container{display:flex; justify-content: center;}
 .start-button{width: 200px; height:200px; border-radius: 50%; font-family:'Nunito'; font-size:2rem;}
 .hidden{display:none;}
-.svg-circle {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; 
+.circle-background {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; 
   width: 90vmin;
   height: 90vmin; 
   border-radius: 50%; justify-content: center; align-items: center;}
-.svg-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 10vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none;}
+.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;}
 /* Toggle switch */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
@@ -46,8 +46,8 @@ input:checked + .slider:before {transform: translateX(25px);}
 </head>
 <body>
 <div id="mainContainer" class="main-container">
-    <div id="circleBackground" class="svg-circle">
-      <div id="affirmationText" class="svg-text">click circle for settings</div>
+    <div id="circleBackground" class="circle-background">
+      <div id="affirmationText" class="affirmation-text">click circle for settings</div>
     </div>
 </div>
 
