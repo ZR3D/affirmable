@@ -1,0 +1,17 @@
+{
+  "name": "Random Affirmation",
+  "short_name": "R-Affirmation",
+  "description": "Random Affirmation is an meditation and relaxation app",
+  "start_url": "index.html",
+  "id": "index.html",
+  "display": "standalone",
+  "background_color": "#E6ECFA",
+  "theme_color": "#E6ECFA",  
+  "lang": "en",
+  "scope": "/",  
+  "icons": [
+    {"src":"images/icon.svg", "sizes":"any", "type":"image/svg+xml"},
+    {"src":"images/icon-192.png", "sizes":"192x192", "type":"image/png"},
+    {"src":"images/icon-512.png", "sizes":"512x512",  "type":"image/png"}
+  ]
+}
