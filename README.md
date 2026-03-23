@@ -1,6 +1,6 @@
-Experimental web app under development that displays random quotes and coloured backgrounds with Solfeggio frequencies.
+Affirmable is an experimental web-app under development that displays random quotes and coloured backgrounds with Solfeggio frequencies.
 
-It aims to be a relaxing meditative app that is positive for people to use. 
+Affirmable aims to be a relaxing meditative app that is positive for people to use. 
 
 Note: to toggle audio click on the background circle.
 
