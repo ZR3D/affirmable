@@ -4,7 +4,7 @@ It aims to be a relaxing meditative app that is positive for people to use.
 
 Note: to toggle audio click on the background circle.
 
-Try it here: https://zr3d.github.io/random-affirmation/
+Try it here: https://zr3d.github.io/affirmable/
 
 Written using Geany IDE.
 
