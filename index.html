@@ -4,66 +4,113 @@
 <meta charset="UTF-8" />
 <title>Random Affirmation</title>
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
-
 <style>
-@font-face {
-  font-family: 'Nunito';
-  font-style: normal;
-  font-weight: 400;
-  src: url('fonts/nunito-regular.woff2') format('woff2');
-}
+@font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
-body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: #E6ECFA;}
-.main-container{display:flex; justify-content: center; height: 100vh; align-items: center;}
+body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background: #E6ECFA;}
+select, input{border-radius: 4px; border:none; padding:0.33rem; background:#fff; margin-right:0.5rem; font-size: 12px;}
+.modal-label{width:90px; display:inline-block; vertical-align: middle;}
+input{font-size: 12px;}
+input[type=number]{width:3rem;}
+.main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease;}
+.dark-mode-background-color{background: #414754;}
+/* Modal */
+.modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
+.modal {font-family:sans-serif; background: #f1f1f1; color:#1d3f4c; padding:2rem; border-radius:10px; max-width:400px; width:90%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
+.modal h2 {margin-top:0;}
+.modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
+.modal .close:hover {color:#000;}
+.modal div{margin-bottom:10px;}
+/* Button */
+button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
+button:hover {background: #5b778d;}
+.start-container{display:flex; justify-content: center;}
+.start-button{width: 200px; height:200px; border-radius: 50%; font-family:'Nunito'; font-size:2rem;}
+.hidden{display:none;}
+.svg-circle {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 760px; height: 760px; border-radius: 50%; justify-content: center; align-items: center;}
+.svg-text { font-family: 'Nunito', sans-serif; font-size:110px; color:#ffffff; opacity:0.5; text-align:center; user-select:none;}
+/* Toggle switch */
+.switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
+.switch input {opacity:0; width:0; height:0;}
+.slider {position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#ccc; transition:0.4s;  border-radius: 24px;}
+.slider:before {position: absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:0.4s; border-radius:50%;}
+input:checked + .slider {background-color: #4f7a9d;}
+input:checked + .slider:before {transform: translateX(25px);}
 </style>
 </head>
 <body>
-<div class="main-container">
-  <div>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" id="designSvg" width="800" height="800" >
-      <defs>
-        <style id="svg-def-style" type="text/css">
-        .svg-text {
-          font-family: 'Nunito', sans-serif;
-          font-size: 110px;
-          fill:#ffffff;
-          fill-opacity:0.5;
-          text-anchor:middle;
-          dominant-baseline:middle;
-        }
-        .svg-circle {
-          fill-opacity:1;
-          stroke:none;
-          stroke-width:0;
-          transition: fill 1s ease;
-          cursor: pointer;
-        }
-        </style>
-      </defs>
-      <g id="backgroundLayer"><rect id="backgroundRect" width="600" height="600" fill="#E6ECFA" /></g>
-      <g id="pathLayer"></g>
-      <g id="triangleLayer"></g>
-      <g id="circleLayer">
-      <circle id="circleBackground" cx="400" cy="400" r="380" class="svg-circle" fill="#0ea5e9"></circle>
-      </g>
-      <g id="textLayer">
-      <text id="textLine1" x="400" y="340" class="svg-text">click circle</text>
-      <text id="textLine2" x="400" y="460" class="svg-text">for audio</text>
-      </g>
-    </svg>
+<div id="mainContainer" class="main-container">
+    <div id="circleBackground" class="svg-circle">
+      <div id="textLine1" class="svg-text">click circle for settings</div>
     </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <div id="beginModel" class="modal-section start-container hidden">
+      <button id="startButton" class="start-button">Start</button>
+    </div>    
+
+    <div id="settingsModel" class="modal-section hidden">
+    <span class="close close-button">&times;</span>
+    <h2>Settings</h2>
+    <p>Change setting below</p>
+    <div>
+      <label class="modal-label">Audio</label>
+      <label class="switch">
+        <input id="audioSwitch" data-name="audio" type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div>
+      <label class="modal-label">Dark Mode</label>
+      <label class="switch">
+        <input id="darkModeSwitch" data-name="darkMode" type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div>
+      <label class="modal-label">Waveform</label>
+      <select id="waveformSelect">
+        <option value="sawtooth">Sawtooth</option>
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="triangle">Triangle</option>        
+      </select>
+    </div>
+    <div>
+      <label class="modal-label">Duration</label>
+      <input id="durationNumber" type="number" value="5" min="1" >
+      <button id="defaultDurationButton">Default Duration</button>
+    </div> 
+    <div>
+      <label class="modal-label">&nbsp;</label>
+      <button class="close-button">Close</button>
+    </div>
+    </div>
+  </div>
 </div>
 
 <script>
 // --- Global Declarations ---
-const appData = {fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0, audio:false};
+const appData = {duration:5, waveform:'triangle', darkMode:false, audio:true, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+const localStorageName = 'randomAffirmationData';
 const textLine1 = document.getElementById('textLine1');
-const textLine2 = document.getElementById('textLine2');
+const mainContainer = document.getElementById('mainContainer');
 const circleBackground = document.getElementById('circleBackground');
+const audioSwitch = document.getElementById('audioSwitch');
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+const waveformSelect = document.getElementById('waveformSelect');
+const durationNumber = document.getElementById('durationNumber');
+const defaultdurationButton = document.getElementById('defaultdurationButton');
+const closeButtons = document.querySelectorAll('.close-button');
+const toggleSwitches = document.querySelectorAll('.switch input');
+const startButton = document.getElementById('startButton');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 const center = {x:400, y:400};
 const lineSpacing = 60;
+const prefixes = ['','be','feel','become','being'];
 const messageList = [
 {message:'ok', prefixes:[], suffixes:[]},
 {message:'relaxed', prefixes:[], suffixes:[]},
@@ -84,7 +131,7 @@ const messageList = [
 {message:'forgiving', prefixes:[], suffixes:[]},
 {message:'love', prefixes:[], suffixes:[]},
 {message:'loving', prefixes:[], suffixes:[]},
-{message:'good', prefixes:[], suffixes:[]},
+{message:'good in yourself', prefixes:['feel'], suffixes:[]},
 {message:'released', prefixes:[], suffixes:[]},
 {message:'grateful', prefixes:[], suffixes:[]},
 {message:'unburdened', prefixes:[], suffixes:[]},
@@ -104,14 +151,14 @@ const messageList = [
 {message:'embraced', prefixes:[], suffixes:[]},
 {message:'balanced', prefixes:[], suffixes:[]},
 {message:'at ease', prefixes:[], suffixes:[]},
-//Letting go / spacious
+// Letting go / spacious
 {message:'open', prefixes:[], suffixes:[]},
 {message:'spacious', prefixes:[], suffixes:[]},
 {message:'light', prefixes:[], suffixes:[]},
 {message:'clear', prefixes:[], suffixes:[]},
 {message:'flowing', prefixes:[], suffixes:[]},
 {message:'expansive', prefixes:[], suffixes:[]},
-//Warm & emotional
+// Warm & emotional
 {message:'warm', prefixes:[], suffixes:[]},
 {message:'connected', prefixes:[], suffixes:[]},
 {message:'gentle', prefixes:[], suffixes:[]},
@@ -136,31 +183,79 @@ const messageList = [
 {message:'curious', prefixes:[], suffixes:[]},
 {message:'receptive', prefixes:[], suffixes:[]},
 // Multi line
-{message:'go', prefixes:['let','letting'], suffixes:['']},
+{message:'go', prefixes:['let','letting'], suffixes:[]},
 {message:'with little', prefixes:['be content'], suffixes:[]},
 {message:'mindfulness', prefixes:['experience'], suffixes:[]},
 {message:'self harmony', prefixes:['experience'], suffixes:[]},
-{message:'with kindness', prefixes:['let go'], suffixes:['']},
-{message:'present', prefixes:['stay'], suffixes:['']},
-{message:'mindful', prefixes:['remain'], suffixes:['']},
-{message:'renewal', prefixes:['allow'], suffixes:['']},
-{message:'be hopeful', prefixes:['let yourself'], suffixes:['']},
-{message:'be here', prefixes:['choose to'], suffixes:['']},
-{message:'breath', prefixes:['notice your'], suffixes:['']},
-{message:'here', prefixes:['simply be'], suffixes:['']},
-{message:'spacious', prefixes:['just be'], suffixes:['']},
-{message:'compassion', prefixes:['open to'], suffixes:['']},
+{message:'with kindness', prefixes:['let go'], suffixes:[]},
+{message:'present', prefixes:['stay'], suffixes:[]},
+{message:'mindful', prefixes:['remain'], suffixes:[]},
+{message:'renewal', prefixes:['allow'], suffixes:[]},
+{message:'be hopeful', prefixes:['let yourself'], suffixes:[]},
+{message:'be here', prefixes:['choose to'], suffixes:[]},
+{message:'breath', prefixes:['notice your'], suffixes:[]},
+{message:'here', prefixes:['simply be'], suffixes:[]},
+{message:'spacious', prefixes:['just be'], suffixes:[]},
+{message:'compassion', prefixes:['open to'], suffixes:[]},
 // New
 {message:'positive', prefixes:[], suffixes:[]},
 {message:'optimistic', prefixes:[], suffixes:[]},
 {message:'thoughtful', prefixes:[], suffixes:[]},
 {message:'contemplative', prefixes:[], suffixes:[]},
+{message:'bliss', prefixes:[], suffixes:[]},
 ];
 
-const prefixes = ['','be','feel','become','being'];
-
 // --- Event Listners ---
-circleBackground.addEventListener('click', toggleAudio);
+circleBackground.addEventListener('click', () => openModal('settingsModel'));
+waveformSelect.addEventListener('change', () => setWaveform(waveformSelect.value)); //set
+durationNumber.addEventListener('change', () => setDuration(durationNumber.value)); //set
+defaultDurationButton.addEventListener('click',  () => setDuration(5)); //set
+startButton.addEventListener('click', begin);
+closeButtons.forEach(closeButton => {
+  closeButton.onclick = () => closeModal();
+});
+toggleSwitches.forEach(toggleSwitch => {
+  toggleSwitch.onchange = () => toggleSetting(toggleSwitch.checked, toggleSwitch.dataset.name);
+});
+
+// --- Settings Functions ---
+function toggleSetting(val, name){
+  appData[name] = val;
+  if(name==='audio') setAudio(false);
+  if(name==='darkMode') setBackground(false); 
+ }
+
+function setAudio(toggle){
+  if(toggle) appData.audio = !appData.audio;
+  // Play immediately for feedback
+  appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
+  playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8);
+  saveLocalStorage();
+}
+
+function setBackground(toggle){
+  if(toggle) appData.darkMode = !appData.darkMode;  
+  if(appData.darkMode){
+    mainContainer.classList.add('dark-mode-background-color');
+  }else{
+    mainContainer.classList.remove('dark-mode-background-color');
+  }
+  saveLocalStorage();
+}
+
+function setWaveform(waveform){
+  if(waveform) waveformSelect.value = waveform;
+  appData.waveform = waveformSelect.value;
+  saveLocalStorage();
+}
+
+function setDuration(duration){
+  appData.duration = Number(duration);
+  if(appData.duration!==Number(durationNumber.value)){
+    durationNumber.value = appData.duration;
+  }
+  saveLocalStorage();
+}
 
 // --- Helper Functions ---
 function getRandomIndex(list, lastIndex, uniqueOnly=true){
@@ -183,7 +278,7 @@ function getPrefix(){
 }
 
 function changeText(){
-  const seconds = 5;
+  const seconds = appData.duration;
   const duration = seconds * 1000;
   appData.msgIndex = getRandomIndex(messageList, appData.msgIndex);
   appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
@@ -194,23 +289,13 @@ function changeText(){
   const prefix = getPrefix();
   // Message
   const message = messageList[appData.msgIndex].message;
-  const messageData = {line1:prefix, line2:message, yline2:center.y+lineSpacing}
-  // Display on a single line if less than ten characters or no prefix
-  if((message.length + prefix.length) <= 10 || prefix===''){
-    messageData.line1 = '';
-    messageData.line2 = `${prefix} ${message}`;
-    messageData.yline2 = center.y;
-  }
+  textLine1.innerHTML = `${prefix} ${message}`;
   // Color
   const fillColor = fill[appData.fillIndex];
   // Sound
   const frequency = solfeggioFreqs[appData.freqIndex];
   playTone(frequency, ctx.currentTime, seconds+4);  
-  // Update Dom
-  textLine1.innerHTML = messageData.line1;
-  textLine2.innerHTML = messageData.line2;
-  textLine2.setAttribute('y', messageData.yline2); 
-  circleBackground.style.fill = fillColor;
+  circleBackground.style.background = fillColor;
   // Loop
   const timeout = setTimeout(changeText, duration);
 }
@@ -220,32 +305,81 @@ const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 // Master gain to control overall volume
 const master = ctx.createGain();
-master.gain.value = 0.05; // nice and gentle
+master.gain.value = 0.05; 
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
 function playTone(freq, startTime, duration) {
+  const ramp = Math.min(duration/2, 2);
   if(!appData.audio) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(0.8, startTime + 2); // fade in 2s
-  gain.gain.linearRampToValueAtTime(0.0, startTime + duration - 2); // fade out last 2s
+  gain.gain.linearRampToValueAtTime(0.8, startTime + ramp); // fade in 2s
+  gain.gain.linearRampToValueAtTime(0.0, startTime + duration - ramp); // fade out last 2s
   osc.frequency.value = freq;
-  osc.type = 'triangle';
+  osc.type = appData.waveform;
   osc.connect(gain).connect(master);
   osc.start(startTime);
   osc.stop(startTime + duration);
 }
 
-function toggleAudio(){
-  appData.audio = !appData.audio;
-  // Play default for feedback
-  playTone(solfeggioFreqs[0], ctx.currentTime, 8);
+// --- Modal ---
+function openModal(id) {
+  document.getElementById('modalBackdrop').style.display = 'flex';
+  document.querySelectorAll('.modal-section').forEach(modalSection => {
+    modalSection.classList.add('hidden');
+  });
+  document.getElementById(id).classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('modalBackdrop').style.display = 'none';
+}
+
+// --- localStorage ---
+function saveLocalStorage(){
+  const json = JSON.stringify(appData);
+  localStorage.setItem(localStorageName, json);  
+}
+
+function onLoad(){
+  //setAudio(false)
+  audioSwitch.checked = appData.audio;
+  darkModeSwitch.checked = appData.darkMode;  
+  setBackground(false);
+  setWaveform(appData.waveform);
+  setDuration(appData.duration);
+  openModal('beginModel');
+}
+
+// Begin button as audio requires a user gesture 
+function begin(){
+  setTimeout(changeText, 4000);
+  closeModal();
+}
+
+function loadLocalStorage(){
+  const local = localStorage.getItem(localStorageName);
+  if (local) {
+    try {
+      const data = JSON.parse(local);
+      Object.assign(appData, data);
+      console.log('Loading local data');
+      onLoad();
+    } catch (e) {
+      saveLocalStorage();
+      onLoad();
+      console.log('Local data unavailable, using default');
+    }
+  }else{
+    saveLocalStorage();
+    onLoad();
+  }
 }
 
 function init(){
-  setTimeout(changeText, 4000);
+  loadLocalStorage();  
 }
 
 init();
