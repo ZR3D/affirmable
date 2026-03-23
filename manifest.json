@@ -6,7 +6,8 @@
   "id": "index.html",
   "display": "standalone",
   "background_color": "#E6ECFA",
-  "theme_color": "#E6ECFA",  
+  "theme_color": "#E6ECFA",
+  "orientation": "any",  
   "lang": "en",
   "scope": "/",  
   "icons": [
