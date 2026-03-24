@@ -33,7 +33,7 @@ button:hover {background: #5b778d;}
   width: 90vmin;
   height: 90vmin;
   border-radius: 50%; justify-content: center; align-items: center;}
-.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;}
+.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px; hyphens:auto;}
 /* Toggle switch */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
@@ -75,7 +75,6 @@ input:checked + .slider:before {transform: translateX(25px);}
     <div id="settingsModel" class="modal-section hidden">
     <span class="close close-button">&times;</span>
     <h2>Settings</h2>
-    <p>Change setting below</p>
     <div>
       <label class="modal-label">Audio</label>
       <label class="switch">
@@ -405,7 +404,7 @@ const ctx = new (window.AudioContext || window.webkitAudioContext)();
 
 // Master gain to control overall volume
 const master = ctx.createGain();
-master.gain.value = 0.05;
+master.gain.value = 0.6;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
