@@ -341,7 +341,7 @@ function changeText(){
   // Sound
   const frequency = solfeggioFreqs[appData.freqIndex];
   if(appData.voices===1){
-    playTone(frequency, ctx.currentTime, seconds+4, appData.waveform, 0);
+    playTone(frequency, ctx.currentTime, seconds+4, appData.waveform, 0, 0.8);
   }else{
     playUnison(frequency, ctx.currentTime, seconds+4);    
   }
@@ -359,13 +359,13 @@ master.gain.value = 0.05;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
-function playTone(freq, startTime, duration, waveform, panValue=0) {
+function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8) {
   const ramp = Math.min(duration/2, 2);
   if(!appData.audio) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(0.8, startTime + ramp); // fade in 2s
+  gain.gain.linearRampToValueAtTime(gainValue, startTime + ramp); // fade in 2s
   gain.gain.linearRampToValueAtTime(0.0, startTime + duration - ramp); // fade out last 2s
   //create panner
   const pan = ctx.createStereoPanner();
@@ -386,7 +386,7 @@ function playTone(freq, startTime, duration, waveform, panValue=0) {
 // --- Create Multi Voice Unison ---
 function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2){
   const detuneAmount = 0.015; // ±1.5% range
-  const gainValue = 0.7/numVoices;
+  const gainValue = 0.8/numVoices;
   const voices = [];
   let shaped;
 
@@ -422,7 +422,7 @@ function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2)
 function playUnison(freq, startTime, duration){
   const voiceList = unison(freq, appData.voices, appData.voicesShape, 2.5, appData.waveform, appData.waveform);  
   voiceList.forEach(voice => {
-   playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue);
+   playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue);
   }); 
 }
 
