@@ -69,11 +69,14 @@ input:checked + .slider:before {transform: translateX(25px);}
       </label>
     </div>
     <div>
-      <label class="modal-label">Dark Mode</label>
-      <label class="switch">
-        <input id="darkModeSwitch" data-name="darkMode" type="checkbox">
-        <span class="slider"></span>
-      </label>
+      <label class="modal-label">Voices</label>
+      <input id="voicesNumber" type="number" value="1" min="1" >
+      <select id="voicesShapeSelect">
+        <option value="power">Exponential</option>
+        <option value="tanh">Smooth</option>
+        <option value="sinh">Wide</option>
+        <option value="cubic">Even</option>
+      </select>
     </div>
     <div>
       <label class="modal-label">Waveform</label>
@@ -83,6 +86,13 @@ input:checked + .slider:before {transform: translateX(25px);}
         <option value="square">Square</option>
         <option value="triangle">Triangle</option>
       </select>
+    </div>
+    <div>
+      <label class="modal-label">Dark Mode</label>
+      <label class="switch">
+        <input id="darkModeSwitch" data-name="darkMode" type="checkbox">
+        <span class="slider"></span>
+      </label>
     </div>
     <div>
       <label class="modal-label">Duration</label>
@@ -98,14 +108,16 @@ input:checked + .slider:before {transform: translateX(25px);}
 
 <script>
 // --- Global Declarations ---
-const appData = {duration:5, waveform:'triangle', darkMode:false, audio:true, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
-const localStorageName = 'randomAffirmationData';
+const appData = {duration:5, waveform:'triangle', darkMode:false, audio:true, voices:1, voicesShape:'power', fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
 const circleBackground = document.getElementById('circleBackground');
 const audioSwitch = document.getElementById('audioSwitch');
-const darkModeSwitch = document.getElementById('darkModeSwitch');
+const voicesNumber = document.getElementById('voicesNumber');
+const voicesShapeSelect = document.getElementById('voicesShapeSelect');
 const waveformSelect = document.getElementById('waveformSelect');
+const darkModeSwitch = document.getElementById('darkModeSwitch');
 const durationNumber = document.getElementById('durationNumber');
 const defaultdurationButton = document.getElementById('defaultdurationButton');
 const closeButtons = document.querySelectorAll('.close-button');
@@ -211,6 +223,8 @@ const messageList = [
 // --- Event Listners ---
 circleBackground.addEventListener('click', () => openModal('settingsModel'));
 waveformSelect.addEventListener('change', () => setWaveform(waveformSelect.value)); //set
+voicesNumber.addEventListener('change', setVoices)
+voicesShapeSelect.addEventListener('change', setVoices)
 durationNumber.addEventListener('change', () => setDuration(durationNumber.value)); //set
 resetDefaultsButton.addEventListener('click', resetDefaults); //set
 startButton.addEventListener('click', begin);
@@ -246,6 +260,13 @@ function setBackground(toggle){
   saveLocalStorage();
 }
 
+function setVoices(){
+  appData.voices = Number(voicesNumber.value);
+  appData.voicesShape = voicesShapeSelect.value;
+  saveLocalStorage();
+}
+
+
 function setWaveform(waveform){
   if(waveform) waveformSelect.value = waveform;
   appData.waveform = waveformSelect.value;
@@ -262,8 +283,10 @@ function setDuration(duration){
 
 function setModalProperties(){
   audioSwitch.checked = appData.audio;
-  darkModeSwitch.checked = appData.darkMode;
+  voicesNumber.value = appData.voices;
+  voicesShapeSelect.value = appData.voicesShape;
   waveformSelect.value = appData.waveform;
+  darkModeSwitch.checked = appData.darkMode;
   durationNumber.value = appData.duration;
 }
 
@@ -272,7 +295,8 @@ function resetDefaults(){
   appData.darkMode = false;
   appData.waveform = 'triangle';
   appData.duration = 5;
-
+  appData.voices = 1;
+  appData.voicesShape = 'power'  
   setModalProperties();
 
   setAudio(false);
@@ -316,7 +340,11 @@ function changeText(){
   const fillColor = fill[appData.fillIndex];
   // Sound
   const frequency = solfeggioFreqs[appData.freqIndex];
-  playTone(frequency, ctx.currentTime, seconds+4);
+  if(appData.voices===1){
+    playTone(frequency, ctx.currentTime, seconds+4, appData.waveform, 0);
+  }else{
+    playUnison(frequency, ctx.currentTime, seconds+4);    
+  }
   circleBackground.style.background = fillColor;
   // Loop
   const timeout = setTimeout(changeText, duration);
@@ -331,7 +359,7 @@ master.gain.value = 0.05;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
-function playTone(freq, startTime, duration) {
+function playTone(freq, startTime, duration, waveform, panValue=0) {
   const ramp = Math.min(duration/2, 2);
   if(!appData.audio) return;
   const osc = ctx.createOscillator();
@@ -339,11 +367,63 @@ function playTone(freq, startTime, duration) {
   gain.gain.setValueAtTime(0, startTime);
   gain.gain.linearRampToValueAtTime(0.8, startTime + ramp); // fade in 2s
   gain.gain.linearRampToValueAtTime(0.0, startTime + duration - ramp); // fade out last 2s
+  //create panner
+  const pan = ctx.createStereoPanner();
+  pan.pan.setValueAtTime(panValue, startTime);  
   osc.frequency.value = freq;
-  osc.type = appData.waveform;
-  osc.connect(gain).connect(master);
+  osc.type = waveform;
+  osc.connect(pan).connect(gain).connect(master);
   osc.start(startTime);
   osc.stop(startTime + duration);
+  osc.onended = () => {
+     pan.disconnect();
+     gain.disconnect()
+   }
+}
+
+// --- Unison ---
+
+// --- Create Multi Voice Unison ---
+function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2){
+  const detuneAmount = 0.015; // ±1.5% range
+  const gainValue = 0.7/numVoices;
+  const voices = [];
+  let shaped;
+
+  // Generate voices
+  for (let i = 0; i < numVoices; i++) {
+    const norm = i / (numVoices - 1);
+    const linear = (norm - 0.5) * 2; // -1 to +1
+    const panValue = (i / (numVoices - 1)) * 2 - 1;
+    if(shapeType === 'power'){
+      // Exponential compression
+      shaped = Math.sign(linear) * Math.pow(Math.abs(linear), curve);
+    }else if(shapeType === 'tanh'){
+      // Smooth S-curve: natural spacing, soft edges
+      shaped = Math.tanh(linear * gainValue);
+    }else if(shapeType === 'sinh'){
+      // More aggressive spread near extremes
+      shaped = Math.sinh(linear * gainValue) / Math.sinh(gainValue);
+      // Simple non-linear easing (lighter center clustering)
+    }else if(shapeType === 'cubic'){
+      shaped = linear ** 3;
+    }else{
+      shaped = linear;
+    }
+    const detune = shaped * detuneAmount;
+    const frequency = baseFreq * (1 + detune);
+    const oscillatorType = (i % 2 === 0)? oscillator2:oscillator1;
+    const phaseOffset = Math.random() / baseFreq; // up to one full cycle offset
+    voices.push({frequency, gainValue, panValue, phaseOffset, oscillatorType});
+  }
+  return voices
+}
+
+function playUnison(freq, startTime, duration){
+  const voiceList = unison(freq, appData.voices, appData.voicesShape, 2.5, appData.waveform, appData.waveform);  
+  voiceList.forEach(voice => {
+   playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue);
+  }); 
 }
 
 // --- Modal ---
