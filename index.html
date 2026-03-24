@@ -17,12 +17,12 @@ input[type=number]{width:3rem;}
 .dark-mode-background-color{background: #414754;}
 /* Modal */
 .modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
-.modal {font-family:sans-serif; background: #f1f1f1; color:#1d3f4c; padding:2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
+.modal {font-family:sans-serif; background: #f1f1f1; color:#1d3f4c; padding:2rem 1rem 2rem 2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
 .modal h2 {margin-top:0;}
 .modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
 .modal .close:hover {color:#000;}
 .modal div{margin-bottom:10px;}
-.modal-label{width:90px; display:inline-block; vertical-align: middle;}
+.modal-label{width:80px; display:inline-block; vertical-align: middle;}
 .button-modal-container{text-align: center; margin-top:20px; }
 /* Button */
 button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
@@ -123,8 +123,8 @@ input:checked + .slider:before {transform: translateX(25px);}
     <div>
       <label class="modal-label">Timer</label>
       <input id="timerMinutesNumber" type="number" value="1" min="1">
-      <button id="startTimerButton">Start Timer</button>
-      <button id="stopTimerButton">Stop Timer</button>
+      <button id="startTimerButton">Start</button>
+      <button id="stopTimerButton">Stop</button>
     </div>
     <div class="button-modal-container">
       <button class="close-button">Close</button>
@@ -142,7 +142,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 // --- Global Declarations ---
 let timerTimeout;
 let started = false;
-const appData = {duration:5, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:1, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+const appData = {duration:5, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:3, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
@@ -343,7 +343,7 @@ function setModalValues(){
 
 function resetDefaults(){
   appData.audio = true;
-  appData.voices = 1;
+  appData.voices = 3;
   appData.voicesShape = 'power';
   appData.waveform = 'triangle';
   appData.waveform2 = 'triangle';
