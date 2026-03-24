@@ -29,10 +29,9 @@ button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; bor
 button:hover {background: #5b778d;}
 .start-container{display:flex; justify-content: center;}
 .start-button{width: 200px; height:200px; border-radius: 50%; font-family:'Nunito'; font-size:2rem;}
-.hidden{display:none;}
-.circle-background {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; 
+.circle-background {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer;
   width: 90vmin;
-  height: 90vmin; 
+  height: 90vmin;
   border-radius: 50%; justify-content: center; align-items: center;}
 .affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;}
 /* Toggle switch */
@@ -42,6 +41,22 @@ button:hover {background: #5b778d;}
 .slider:before {position: absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:0.4s; border-radius:50%;}
 input:checked + .slider {background-color: #4f7a9d;}
 input:checked + .slider:before {transform: translateX(25px);}
+/* Timer */
+.timer-circle{width:1px; height:1px; border-radius:50%; background:none; opacity:0.7; border:1px solid #ffffff; display: none;}
+.timer-container{position:fixed; top:0; left:0; height:100vh; width:100vw; display:flex; justify-content:center;  align-items:center; pointer-events: none;}
+.timer-animation {
+  opacity: 0.5;
+  display: block;
+  animation-timing-function: ease-out;
+  animation-name: timer-animation-keyframes;
+  animation-duration: 5s;
+  animation-iteration-count: 5;
+}
+@keyframes timer-animation-keyframes {
+  0% {width:1px; height:1px; opacity: 0.5; border-width:2px;}
+  100% {width:100vw; height:100vw; opacity: 0; border-width:20px;}
+}
+.hidden{display:none;}
 </style>
 </head>
 <body>
@@ -53,7 +68,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
-    <div id="beginModel" class="modal-section start-container hidden">
+    <div id="startModel" class="modal-section start-container hidden">
       <button id="startButton" class="start-button">Start</button>
     </div>
 
@@ -79,8 +94,14 @@ input:checked + .slider:before {transform: translateX(25px);}
       </select>
     </div>
     <div>
-      <label class="modal-label">Waveform</label>
+      <label class="modal-label">Waveforms</label>
       <select id="waveformSelect">
+        <option value="sawtooth">Sawtooth</option>
+        <option value="sine">Sine</option>
+        <option value="square">Square</option>
+        <option value="triangle">Triangle</option>
+      </select>
+      <select id="waveformSelect2">
         <option value="sawtooth">Sawtooth</option>
         <option value="sine">Sine</option>
         <option value="square">Square</option>
@@ -98,6 +119,13 @@ input:checked + .slider:before {transform: translateX(25px);}
       <label class="modal-label">Duration</label>
       <input id="durationNumber" type="number" value="5" min="1" >
     </div>
+
+    <div>
+      <label class="modal-label">Timer</label>
+      <input id="timerMinutesNumber" type="number" value="1" min="1">
+      <button id="startTimerButton">Start Timer</button>
+      <button id="stopTimerButton">Stop Timer</button>
+    </div>
     <div class="button-modal-container">
       <button class="close-button">Close</button>
       <button id="resetDefaultsButton">Reset Defaults</button>
@@ -106,9 +134,15 @@ input:checked + .slider:before {transform: translateX(25px);}
   </div>
 </div>
 
+<div id="timerContainer" class="timer-container hidden">
+  <div id="timerCircle" class="timer-circle">&nbsp;</div>
+</div>
+
 <script>
 // --- Global Declarations ---
-const appData = {duration:5, waveform:'triangle', darkMode:false, audio:true, voices:1, voicesShape:'power', fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+let timerTimeout;
+let started = false;
+const appData = {duration:5, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:1, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
@@ -117,12 +151,18 @@ const audioSwitch = document.getElementById('audioSwitch');
 const voicesNumber = document.getElementById('voicesNumber');
 const voicesShapeSelect = document.getElementById('voicesShapeSelect');
 const waveformSelect = document.getElementById('waveformSelect');
+const waveformSelect2 = document.getElementById('waveformSelect2');
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 const durationNumber = document.getElementById('durationNumber');
 const defaultdurationButton = document.getElementById('defaultdurationButton');
 const closeButtons = document.querySelectorAll('.close-button');
 const toggleSwitches = document.querySelectorAll('.switch input');
 const startButton = document.getElementById('startButton');
+const timerMinutesNumber = document.getElementById('timerMinutesNumber');
+const startTimerButton = document.getElementById('startTimerButton');
+const stopTimerButton = document.getElementById('stopTimerButton');
+const timerContainer = document.getElementById('timerContainer');
+const timerCircle = document.getElementById('timerCircle');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 const prefixes = ['','be','feel','become','being'];
@@ -222,85 +262,95 @@ const messageList = [
 
 // --- Event Listners ---
 circleBackground.addEventListener('click', () => openModal('settingsModel'));
-waveformSelect.addEventListener('change', () => setWaveform(waveformSelect.value)); //set
-voicesNumber.addEventListener('change', setVoices)
-voicesShapeSelect.addEventListener('change', setVoices)
-durationNumber.addEventListener('change', () => setDuration(durationNumber.value)); //set
-resetDefaultsButton.addEventListener('click', resetDefaults); //set
-startButton.addEventListener('click', begin);
+waveformSelect.addEventListener('change', setDataFromModal);
+waveformSelect2.addEventListener('change', setDataFromModal);
+voicesNumber.addEventListener('input', setDataFromModal);
+voicesShapeSelect.addEventListener('change', setDataFromModal);
+durationNumber.addEventListener('input', setDataFromModal);
+audioSwitch.addEventListener('change', setDataFromModal);
+darkModeSwitch.addEventListener('change', setDataFromModal);
+resetDefaultsButton.addEventListener('click', resetDefaults);
+startButton.addEventListener('click', start);
+startTimerButton.addEventListener('click', startTimer);
+stopTimerButton.addEventListener('click', stopTimer);
+timerCircle.addEventListener('animationend', stopTimer);
 closeButtons.forEach(closeButton => {
   closeButton.onclick = () => closeModal();
 });
-toggleSwitches.forEach(toggleSwitch => {
-  toggleSwitch.onchange = () => toggleSetting(toggleSwitch.checked, toggleSwitch.dataset.name);
-});
 
-// --- Settings Functions ---
-function toggleSetting(val, name){
-  appData[name] = val;
-  if(name==='audio') setAudio(false);
-  if(name==='darkMode') setBackground(false);
- }
-
-function setAudio(toggle){
-  if(toggle) appData.audio = !appData.audio;
-  // Play immediately for feedback
-  appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
-  playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8);
-  saveLocalStorage();
+// --- Timer Functions ---
+function startTimer(){
+  closeModal();
+  stopTimer();
+  const minutes = Number(timerMinutesNumber.value);
+  const ms = minutes * 1000 * 60;
+  timerTimeout = setTimeout(playTimerAlarm, ms);
 }
 
-function setBackground(toggle){
-  if(toggle) appData.darkMode = !appData.darkMode;
+function stopTimer() {
+  clearTimeout(timerTimeout);
+  timerContainer.classList.add('hidden');
+  timerCircle.classList.remove('timer-animation')
+}
+
+function playTimerAlarm() {
+  timerContainer.classList.remove('hidden');
+  timerCircle.classList.add('timer-animation');
+}
+
+function setAudio(){
+  appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
+  playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8, appData.waveform, 0, 0.8);
+}
+
+function setBackground(){
   if(appData.darkMode){
     mainContainer.classList.add('dark-mode-background-color');
   }else{
     mainContainer.classList.remove('dark-mode-background-color');
   }
-  saveLocalStorage();
 }
 
-function setVoices(){
+// Sets appData properties based on modal form values
+function setDataFromModal(){
+  const audio = appData.audio;
+  const darkMode = appData.darkMode;
+  appData.audio = audioSwitch.checked;
   appData.voices = Number(voicesNumber.value);
   appData.voicesShape = voicesShapeSelect.value;
-  saveLocalStorage();
-}
-
-
-function setWaveform(waveform){
-  if(waveform) waveformSelect.value = waveform;
   appData.waveform = waveformSelect.value;
+  appData.waveform2 = waveformSelect2.value;
+  appData.darkMode = darkModeSwitch.checked;
+  appData.duration = Number(durationNumber.value);
+  appData.timerMinutes= Number(timerMinutesNumber.value);
+  if((audio !== appData.audio) && appData.audio) setAudio();
+  if(darkMode !== appData.darkMode) setBackground();
   saveLocalStorage();
 }
 
-function setDuration(duration){
-  appData.duration = Number(duration);
-  if(appData.duration!==Number(durationNumber.value)){
-    durationNumber.value = appData.duration;
-  }
-  saveLocalStorage();
-}
-
-function setModalProperties(){
+function setModalValues(){
   audioSwitch.checked = appData.audio;
   voicesNumber.value = appData.voices;
   voicesShapeSelect.value = appData.voicesShape;
   waveformSelect.value = appData.waveform;
+  waveformSelect2.value = appData.waveform2;
   darkModeSwitch.checked = appData.darkMode;
   durationNumber.value = appData.duration;
+  timerMinutesNumber.value = appData.timerMinutes;
+  if(appData.audio && started) setAudio(); //set if true
+  setBackground();
 }
 
 function resetDefaults(){
   appData.audio = true;
-  appData.darkMode = false;
-  appData.waveform = 'triangle';
-  appData.duration = 5;
   appData.voices = 1;
-  appData.voicesShape = 'power'  
-  setModalProperties();
-
-  setAudio(false);
-  setBackground(false);
+  appData.voicesShape = 'power';
+  appData.waveform = 'triangle';
+  appData.waveform2 = 'triangle';
+  appData.darkMode = false;
+  appData.duration = 5;
+  appData.timerMinutes = 5;
+  setModalValues();
 }
 
 // --- Helper Functions ---
@@ -343,7 +393,7 @@ function changeText(){
   if(appData.voices===1){
     playTone(frequency, ctx.currentTime, seconds+4, appData.waveform, 0, 0.8);
   }else{
-    playUnison(frequency, ctx.currentTime, seconds+4);    
+    playUnison(frequency, ctx.currentTime, seconds+4);
   }
   circleBackground.style.background = fillColor;
   // Loop
@@ -369,7 +419,7 @@ function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8
   gain.gain.linearRampToValueAtTime(0.0, startTime + duration - ramp); // fade out last 2s
   //create panner
   const pan = ctx.createStereoPanner();
-  pan.pan.setValueAtTime(panValue, startTime);  
+  pan.pan.setValueAtTime(panValue, startTime);
   osc.frequency.value = freq;
   osc.type = waveform;
   osc.connect(pan).connect(gain).connect(master);
@@ -380,16 +430,12 @@ function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8
      gain.disconnect()
    }
 }
-
-// --- Unison ---
-
-// --- Create Multi Voice Unison ---
+// --- Multi Voice Unison ---
 function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2){
   const detuneAmount = 0.015; // ±1.5% range
   const gainValue = 0.8/numVoices;
   const voices = [];
   let shaped;
-
   // Generate voices
   for (let i = 0; i < numVoices; i++) {
     const norm = i / (numVoices - 1);
@@ -420,10 +466,11 @@ function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2)
 }
 
 function playUnison(freq, startTime, duration){
-  const voiceList = unison(freq, appData.voices, appData.voicesShape, 2.5, appData.waveform, appData.waveform);  
+  const curve = 2.5;
+  const voiceList = unison(freq, appData.voices, appData.voicesShape, curve, appData.waveform, appData.waveform2);
   voiceList.forEach(voice => {
-   playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue);
-  }); 
+    playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue);
+  });
 }
 
 // --- Modal ---
@@ -445,14 +492,14 @@ function saveLocalStorage(){
   localStorage.setItem(localStorageName, json);
 }
 
-function onLoad(){
-  setModalProperties();
-  setBackground(false);
-  openModal('beginModel');
+function onLoad(){  
+  setModalValues();  
+  openModal('startModel');
 }
 
 // Begin button as audio requires a user gesture
-function begin(){
+function start(){
+  started = true;
   setTimeout(changeText, 4000);
   closeModal();
 }
