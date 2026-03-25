@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
 <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="cornflowerblue" />
 <style>
 @font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
@@ -42,7 +43,7 @@ button:hover {background: #5b778d;}
 input:checked + .slider {background-color: #4f7a9d;}
 input:checked + .slider:before {transform: translateX(25px);}
 /* Timer */
-.timer-circle{width:1px; height:1px; border-radius:50%; background:none; opacity:0.7; border:1px solid #ffffff; display: none;}
+.timer-circle{width:1px; height:1px; border-radius:50%; background:none; opacity:0.7; border:1px solid #ffffff; display: none; position:fixed;}
 .timer-container{position:fixed; top:0; left:0; height:100vh; width:100vw; display:flex; justify-content:center;  align-items:center; pointer-events: none;}
 .timer-animation {
   opacity: 0.5;
@@ -54,7 +55,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 }
 @keyframes timer-animation-keyframes {
   0% {width:1px; height:1px; opacity: 0.5; border-width:2px;}
-  100% {width:100vw; height:100vw; opacity: 0; border-width:20px;}
+  100% {width:900px; height:900px; opacity:0; border-width:20px;}
 }
 .hidden{display:none;}
 </style>
@@ -140,7 +141,8 @@ input:checked + .slider:before {transform: translateX(25px);}
 <script>
 // --- Global Declarations ---
 let timerTimeout;
-let started = false;
+let isStarted = false;
+let isVisible = true;
 const appData = {duration:5, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:3, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
@@ -162,6 +164,7 @@ const startTimerButton = document.getElementById('startTimerButton');
 const stopTimerButton = document.getElementById('stopTimerButton');
 const timerContainer = document.getElementById('timerContainer');
 const timerCircle = document.getElementById('timerCircle');
+const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 const prefixes = ['','be','feel','become','being'];
@@ -268,6 +271,8 @@ voicesShapeSelect.addEventListener('change', setDataFromModal);
 durationNumber.addEventListener('input', setDataFromModal);
 audioSwitch.addEventListener('change', setDataFromModal);
 darkModeSwitch.addEventListener('change', setDataFromModal);
+timerMinutesNumber.addEventListener('input', setDataFromModal);
+
 resetDefaultsButton.addEventListener('click', resetDefaults);
 startButton.addEventListener('click', start);
 startTimerButton.addEventListener('click', startTimer);
@@ -275,6 +280,16 @@ stopTimerButton.addEventListener('click', stopTimer);
 timerCircle.addEventListener('animationend', stopTimer);
 closeButtons.forEach(closeButton => {
   closeButton.onclick = () => closeModal();
+});
+document.addEventListener("visibilitychange", () => {
+  let gainValue = 0;
+  if(document.hidden) {
+    isVisible = false;    
+  } else {
+    isVisible = true;
+    gainValue = 0.6;
+  }
+  master.gain.linearRampToValueAtTime(gainValue, ctx.currentTime + 2);
 });
 
 // --- Timer Functions ---
@@ -308,6 +323,12 @@ function setBackground(){
   }else{
     mainContainer.classList.remove('dark-mode-background-color');
   }
+  setThemeColor();
+}
+
+function setThemeColor() {
+  const color = (appData.darkMode)? "#414754":"#E6ECFA";
+  metaThemeColor.setAttribute('content', color);
 }
 
 // Sets appData properties based on modal form values
@@ -336,7 +357,7 @@ function setModalValues(){
   darkModeSwitch.checked = appData.darkMode;
   durationNumber.value = appData.duration;
   timerMinutesNumber.value = appData.timerMinutes;
-  if(appData.audio && started) setAudio(); //set if true
+  if(appData.audio && isStarted) setAudio(); //set if true
   setBackground();
 }
 
@@ -401,7 +422,6 @@ function changeText(){
 
 // --- Audio ---
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
 // Master gain to control overall volume
 const master = ctx.createGain();
 master.gain.value = 0.6;
@@ -410,7 +430,7 @@ master.connect(ctx.destination);
 // Function to play a single tone with smooth fade in/out
 function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8) {
   const ramp = Math.min(duration/2, 2);
-  if(!appData.audio) return;
+  if(!appData.audio || !isVisible) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, startTime);
@@ -498,7 +518,7 @@ function onLoad(){
 
 // Begin button as audio requires a user gesture
 function start(){
-  started = true;
+  isStarted = true;
   setTimeout(changeText, 4000);
   closeModal();
 }
