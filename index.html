@@ -170,7 +170,7 @@ let isMobile;
 let isStarted = false;
 let isVisible = true;
 let selectedMessages = [];
-const appData = {messageType:'all', duration:10, waveform:'sine', waveform2:'sine', darkMode:false, audio:true, voices:3, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+const appData = {messageType:'all', duration:10, waveform:'sine', waveform2:'sine', darkMode:false, audio:true, voices:3, voicesShape:'tanh', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
@@ -399,8 +399,8 @@ function setModalValues(){
 
 function resetDefaults(){
   appData.audio = true;
-  appData.voices = 3;
-  appData.voicesShape = 'power';
+  appData.voices = 5;
+  appData.voicesShape = 'tanh';
   appData.waveform = 'sine';
   appData.waveform2 = 'sine';
   appData.darkMode = false;
