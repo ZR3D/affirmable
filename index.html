@@ -3,18 +3,27 @@
 <head>
 <meta charset="UTF-8" />
 <title>Affirmable</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="cornflowerblue" />
+<meta name="theme-color" content="#E6ECFA" />
 <style>
+:root {
+  --app-theme-color: #E6ECFA;
+}
+[data-theme="light"] {
+  --app-theme-color: #E6ECFA;
+}
+[data-theme="dark"] {
+  --app-theme-color: #414754;
+}
 @font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
-body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background: #E6ECFA;}
+body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: var(--app-theme-color); padding-bottom: env(safe-area-inset-bottom);}
 select, input{border-radius: 4px; border:none; padding:0.33rem; background:#fff; margin-right:0.5rem; font-size: 12px;}
 input{font-size: 12px;}
 input[type=number]{width:3rem;}
-.main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease;}
+.main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease; background: var(--app-theme-color)}
 .dark-mode-background-color{background: #414754;}
 /* Modal */
 .modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
@@ -35,7 +44,7 @@ button:hover {background: #5b778d;}
   height: 90vmin;
   border-radius: 50%; justify-content: center; align-items: center;}
 .affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px; hyphens:auto;}
-/* Toggle switch */
+/* --- Toggle switch --- */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
 .slider {position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#ccc; transition:0.4s;  border-radius: 24px;}
@@ -57,6 +66,9 @@ input:checked + .slider:before {transform: translateX(25px);}
   0% {width:1px; height:1px; opacity: 0.5; border-width:2px;}
   100% {width:900px; height:900px; opacity:0; border-width:20px;}
 }
+/* --- Toast --- */
+.toast{font-family: sans-serif; z-index: 1100;  position: fixed;  bottom: 0px;  left: 0px;  width: 100%;  margin: 0px;  padding: 10px 20px;  color: #ffffff;  font-size: 0.9rem;  transition: opacity 0.3s ease;  opacity: 0;  pointer-events: none; background:#12345678;}
+.toast.show {opacity: 1;  pointer-events: auto;}
 .hidden{display:none;}
 </style>
 </head>
@@ -85,7 +97,7 @@ input:checked + .slider:before {transform: translateX(25px);}
     </div>
     <div>
       <label class="modal-label">Voices</label>
-      <input id="voicesNumber" type="number" value="1" min="1" >
+      <input id="voicesNumber" type="number" value="3" min="1" >
       <select id="voicesShapeSelect">
         <option value="power">Exponential</option>
         <option value="tanh">Smooth</option>
@@ -116,10 +128,19 @@ input:checked + .slider:before {transform: translateX(25px);}
       </label>
     </div>
     <div>
+      <label class="modal-label">Messages</label>
+      <select id="messageTypeSelect">
+        <option value="all">All</option>
+        <option value="letting go">Letting Go</option>
+        <option value="meditation">Meditation</option>
+        <option value="uplifting">Uplifting</option>
+        <option value="warm">Warm</option>        
+      </select>
+    </div>
+    <div>
       <label class="modal-label">Duration</label>
       <input id="durationNumber" type="number" value="5" min="1" >
     </div>
-
     <div>
       <label class="modal-label">Timer</label>
       <input id="timerMinutesNumber" type="number" value="1" min="1">
@@ -138,12 +159,18 @@ input:checked + .slider:before {transform: translateX(25px);}
   <div id="timerCircle" class="timer-circle">&nbsp;</div>
 </div>
 
+<div id="toast" class="toast success"></div>
+
 <script>
 // --- Global Declarations ---
 let timerTimeout;
+let toastTimeout;
+let letterTimeout;
+let isMobile;
 let isStarted = false;
 let isVisible = true;
-const appData = {duration:5, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:3, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+let selectedMessages = [];
+const appData = {messageType:'all', duration:10, waveform:'triangle', waveform2:'triangle', darkMode:false, audio:true, voices:3, voicesShape:'power', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
@@ -154,6 +181,7 @@ const voicesShapeSelect = document.getElementById('voicesShapeSelect');
 const waveformSelect = document.getElementById('waveformSelect');
 const waveformSelect2 = document.getElementById('waveformSelect2');
 const darkModeSwitch = document.getElementById('darkModeSwitch');
+const messageTypeSelect = document.getElementById('messageTypeSelect');
 const durationNumber = document.getElementById('durationNumber');
 const defaultdurationButton = document.getElementById('defaultdurationButton');
 const closeButtons = document.querySelectorAll('.close-button');
@@ -164,102 +192,103 @@ const startTimerButton = document.getElementById('startTimerButton');
 const stopTimerButton = document.getElementById('stopTimerButton');
 const timerContainer = document.getElementById('timerContainer');
 const timerCircle = document.getElementById('timerCircle');
+const toast = document.getElementById('toast');
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 const prefixes = ['','be','feel','become','being'];
 const messageList = [
-{message:'ok', prefixes:[], suffixes:[]},
-{message:'relaxed', prefixes:[], suffixes:[]},
-{message:'happy', prefixes:[], suffixes:[]},
-{message:'peaceful', prefixes:[], suffixes:[]},
-{message:'still', prefixes:[], suffixes:[]},
-{message:'contented', prefixes:[], suffixes:[]},
-{message:'tranquil', prefixes:[], suffixes:[]},
-{message:'free', prefixes:[], suffixes:[]},
-{message:'calm', prefixes:[], suffixes:[]},
-{message:'quiet', prefixes:[], suffixes:[]},
-{message:'caring', prefixes:[], suffixes:[]},
-{message:'present', prefixes:[], suffixes:[]},
-{message:'healthy', prefixes:[], suffixes:[]},
-{message:'generous', prefixes:[], suffixes:[]},
-{message:'kind', prefixes:[], suffixes:[]},
-{message:'accepting', prefixes:[], suffixes:[]},
-{message:'forgiving', prefixes:[], suffixes:[]},
-{message:'love', prefixes:[], suffixes:[]},
-{message:'loving', prefixes:[], suffixes:[]},
-{message:'good in yourself', prefixes:['feel'], suffixes:[]},
-{message:'released', prefixes:[], suffixes:[]},
-{message:'grateful', prefixes:[], suffixes:[]},
-{message:'unburdened', prefixes:[], suffixes:[]},
-{message:'easy', prefixes:[], suffixes:[]},
-{message:'floaty', prefixes:[], suffixes:[]},
-{message:'joyful', prefixes:[], suffixes:[]},
-{message:'patient', prefixes:[], suffixes:[]},
+{message:'ok', prefixes:[], tags:[]},
+{message:'relaxed', prefixes:[], tags:[]},
+{message:'happy', prefixes:[], tags:['meditation']},
+{message:'peaceful', prefixes:[], tags:['meditation']},
+{message:'still', prefixes:[], tags:['meditation']},
+{message:'contented', prefixes:[], tags:['meditation']},
+{message:'tranquil', prefixes:[], tags:['meditation']},
+{message:'free', prefixes:[], tags:[]},
+{message:'calm', prefixes:['experience'], tags:[]},
+{message:'quiet', prefixes:['feel'], tags:['meditation']},
+{message:'caring', prefixes:[], tags:[]},
+{message:'healthy', prefixes:['feel'], tags:[]},
+{message:'generous', prefixes:[], tags:[]},
+{message:'kindness', prefixes:['experience'], tags:[]},
+{message:'accepting', prefixes:[], tags:[]},
+{message:'forgiving', prefixes:[], tags:[]},
+{message:'loved', prefixes:['feel'], tags:[]},
+{message:'loving', prefixes:[], tags:[]},
+{message:'good in yourself', prefixes:['feel'], tags:[]},
+{message:'released', prefixes:[], tags:[]},
+{message:'grateful', prefixes:['feel'], tags:[]},
+{message:'unburdened', prefixes:[], tags:[]},
+{message:'easy', prefixes:['free and'], tags:[]},
+{message:'floaty', prefixes:[], tags:[]},
+{message:'joyful', prefixes:['be'], tags:[]},
+{message:'patient', prefixes:['feel'], tags:[]},
 // From Chatty
-{message:'compassionate', prefixes:[], suffixes:[]},
-{message:'settled', prefixes:[], suffixes:[]},
-{message:'steady', prefixes:[], suffixes:[]},
-{message:'grounded', prefixes:[], suffixes:[]},
-{message:'centred', prefixes:[], suffixes:[]},
-{message:'safe', prefixes:[], suffixes:[]},
-{message:'supported', prefixes:[], suffixes:[]},
-{message:'held', prefixes:[], suffixes:[]},
-{message:'embraced', prefixes:[], suffixes:[]},
-{message:'balanced', prefixes:[], suffixes:[]},
-{message:'at ease', prefixes:[], suffixes:[]},
+{message:'compassionate', prefixes:[], tags:[]},
+{message:'settled', prefixes:[], tags:[]},
+{message:'steady', prefixes:[], tags:[]},
+{message:'grounded', prefixes:[], tags:[]},
+{message:'centred', prefixes:[], tags:[]},
+{message:'safe', prefixes:['feel'], tags:[]},
+{message:'supported', prefixes:[], tags:[]},
+{message:'held', prefixes:[], tags:[]},
+{message:'embraced', prefixes:[], tags:[]},
+{message:'balanced', prefixes:[], tags:[]},
+{message:'at ease', prefixes:[], tags:[]},
 // Letting go / spacious
-{message:'open', prefixes:[], suffixes:[]},
-{message:'spacious', prefixes:[], suffixes:[]},
-{message:'light', prefixes:[], suffixes:[]},
-{message:'clear', prefixes:[], suffixes:[]},
-{message:'flowing', prefixes:[], suffixes:[]},
-{message:'expansive', prefixes:[], suffixes:[]},
+{message:'open', prefixes:[], tags:['letting go']},
+{message:'spacious', prefixes:[], tags:['letting go']},
+{message:'light', prefixes:[], tags:['letting go']},
+{message:'clear', prefixes:[], tags:['letting go']},
+{message:'flowing', prefixes:[], tags:['letting go']},
+{message:'expansive', prefixes:[], tags:['letting go']},
 // Warm & emotional
-{message:'warm', prefixes:[], suffixes:[]},
-{message:'connected', prefixes:[], suffixes:[]},
-{message:'gentle', prefixes:[], suffixes:[]},
-{message:'nurtured', prefixes:[], suffixes:[]},
-{message:'appreciative', prefixes:[], suffixes:[]},
-{message:'fulfilled', prefixes:[], suffixes:[]},
-{message:'whole', prefixes:[], suffixes:[]},
+{message:'warm', prefixes:[], tags:['warm']},
+{message:'connected', prefixes:[], tags:['warm']},
+{message:'gentle', prefixes:[], tags:['warm']},
+{message:'nurtured', prefixes:[], tags:['warm']},
+{message:'appreciative', prefixes:[], tags:['warm']},
+{message:'fulfilled', prefixes:[], tags:['warm']},
+{message:'whole', prefixes:[], tags:['warm']},
 // Quietly uplifting
-{message:'bright', prefixes:[], suffixes:[]},
-{message:'refreshed', prefixes:[], suffixes:[]},
-{message:'renewed', prefixes:[], suffixes:[]},
-{message:'uplifted', prefixes:[], suffixes:[]},
-{message:'inspired', prefixes:[], suffixes:[]},
-{message:'hopeful', prefixes:[], suffixes:[]},
-{message:'alive', prefixes:[], suffixes:[]},
-{message:'awake', prefixes:[], suffixes:[]},
+{message:'bright', prefixes:[], tags:['uplifting']},
+{message:'refreshed', prefixes:[], tags:['uplifting']},
+{message:'renewed', prefixes:[], tags:['uplifting']},
+{message:'uplifted', prefixes:[], tags:['uplifting']},
+{message:'inspired', prefixes:[], tags:['uplifting']},
+{message:'hopeful', prefixes:[], tags:['uplifting']},
+{message:'alive', prefixes:[], tags:['uplifting']},
+{message:'awake', prefixes:[], tags:['uplifting']},
 // Mindfulness / awareness
-{message:'energised', prefixes:[], suffixes:[]},
-{message:'aware', prefixes:[], suffixes:[]},
-{message:'mindful', prefixes:[], suffixes:[]},
-{message:'attentive', prefixes:[], suffixes:[]},
-{message:'curious', prefixes:[], suffixes:[]},
-{message:'receptive', prefixes:[], suffixes:[]},
+{message:'energised', prefixes:[], tags:[]},
+{message:'aware', prefixes:[], tags:['meditation']},
+{message:'mindful', prefixes:['all','remain'], tags:['meditation']},
+{message:'attentive', prefixes:[], tags:['meditation']},
+{message:'in gently', prefixes:['breathe'], tags:['meditation']},
+{message:'the breath', prefixes:['focus on'], tags:['meditation']},
+{message:'curious', prefixes:[], tags:[]},
+{message:'receptive', prefixes:[], tags:[]},
 // Multi line
-{message:'go', prefixes:['let','letting'], suffixes:[]},
-{message:'with little', prefixes:['be content'], suffixes:[]},
-{message:'mindfulness', prefixes:['experience'], suffixes:[]},
-{message:'self harmony', prefixes:['experience'], suffixes:[]},
-{message:'with kindness', prefixes:['let go'], suffixes:[]},
-{message:'present', prefixes:['stay'], suffixes:[]},
-{message:'mindful', prefixes:['remain'], suffixes:[]},
-{message:'renewal', prefixes:['allow'], suffixes:[]},
-{message:'be hopeful', prefixes:['let yourself'], suffixes:[]},
-{message:'be here', prefixes:['choose to'], suffixes:[]},
-{message:'breath', prefixes:['notice your'], suffixes:[]},
-{message:'here', prefixes:['simply be'], suffixes:[]},
-{message:'spacious', prefixes:['just be'], suffixes:[]},
-{message:'compassion', prefixes:['open to'], suffixes:[]},
+{message:'go', prefixes:['let','letting'], tags:[]},
+{message:'with little', prefixes:['be content'], tags:[]},
+{message:'mindfulness', prefixes:['experience'], tags:['meditation']},
+{message:'self harmony', prefixes:['experience'], tags:[]},
+{message:'with kindness', prefixes:['let go'], tags:['letting go', 'meditation']},
+{message:'present', prefixes:['stay'], tags:['meditation']},
+{message:'renewal', prefixes:['allow'], tags:[]},
+{message:'be hopeful', prefixes:['let yourself'], tags:[]},
+{message:'be here', prefixes:['choose to'], tags:[]},
+{message:'breath', prefixes:['notice your'], tags:['meditation']},
+{message:'here', prefixes:['simply be'], tags:[]},
+{message:'spacious', prefixes:['just be'], tags:[]},
+{message:'compassion', prefixes:['open to'], tags:[]},
 // New
-{message:'positive', prefixes:[], suffixes:[]},
-{message:'optimistic', prefixes:[], suffixes:[]},
-{message:'thoughtful', prefixes:[], suffixes:[]},
-{message:'contemplative', prefixes:[], suffixes:[]},
-{message:'bliss', prefixes:[], suffixes:[]},
+{message:'positive', prefixes:[], tags:[]},
+{message:'optimistic', prefixes:[], tags:[]},
+{message:'thoughtful', prefixes:[], tags:[]},
+{message:'contemplative', prefixes:[], tags:[]},
+{message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
 ];
 
 // --- Event Listners ---
@@ -268,11 +297,11 @@ waveformSelect.addEventListener('change', setDataFromModal);
 waveformSelect2.addEventListener('change', setDataFromModal);
 voicesNumber.addEventListener('input', setDataFromModal);
 voicesShapeSelect.addEventListener('change', setDataFromModal);
+messageTypeSelect.addEventListener('change', setDataFromModal);
 durationNumber.addEventListener('input', setDataFromModal);
 audioSwitch.addEventListener('change', setDataFromModal);
 darkModeSwitch.addEventListener('change', setDataFromModal);
 timerMinutesNumber.addEventListener('input', setDataFromModal);
-
 resetDefaultsButton.addEventListener('click', resetDefaults);
 startButton.addEventListener('click', start);
 startTimerButton.addEventListener('click', startTimer);
@@ -284,7 +313,7 @@ closeButtons.forEach(closeButton => {
 document.addEventListener("visibilitychange", () => {
   let gainValue = 0;
   if(document.hidden) {
-    isVisible = false;    
+    isVisible = false;
   } else {
     isVisible = true;
     gainValue = 0.6;
@@ -299,6 +328,7 @@ function startTimer(){
   const minutes = Number(timerMinutesNumber.value);
   const ms = minutes * 1000 * 60;
   timerTimeout = setTimeout(playTimerAlarm, ms);
+  showToast('Timer Started');
 }
 
 function stopTimer() {
@@ -310,6 +340,13 @@ function stopTimer() {
 function playTimerAlarm() {
   timerContainer.classList.remove('hidden');
   timerCircle.classList.add('timer-animation');
+  showToast('Timer Completed');
+  const now = ctx.currentTime;
+  const interval = 1;
+  const freqId = [0,0,1,2,3,0,4,0];
+  for(let i=0; i<7; i++){
+    playTone(solfeggioFreqs[freqId[i]], now + (i * interval), 0.8, 'sine', 0, 0.8, true)
+  }
 }
 
 function setAudio(){
@@ -317,17 +354,11 @@ function setAudio(){
   playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8, appData.waveform, 0, 0.8);
 }
 
-function setBackground(){
-  if(appData.darkMode){
-    mainContainer.classList.add('dark-mode-background-color');
-  }else{
-    mainContainer.classList.remove('dark-mode-background-color');
-  }
-  setThemeColor();
-}
-
 function setThemeColor() {
-  const color = (appData.darkMode)? "#414754":"#E6ECFA";
+  const color = (appData.darkMode)? '#414754':'#E6ECFA';
+  const theme = (appData.darkMode)? 'dark':'light';
+  //document.documentElement.style.setProperty('--app-theme-color', color);
+  document.documentElement.setAttribute('data-theme', theme);
   metaThemeColor.setAttribute('content', color);
 }
 
@@ -341,10 +372,12 @@ function setDataFromModal(){
   appData.waveform = waveformSelect.value;
   appData.waveform2 = waveformSelect2.value;
   appData.darkMode = darkModeSwitch.checked;
+  appData.messageType = messageTypeSelect.value;
   appData.duration = Number(durationNumber.value);
   appData.timerMinutes= Number(timerMinutesNumber.value);
   if((audio !== appData.audio) && appData.audio) setAudio();
-  if(darkMode !== appData.darkMode) setBackground();
+  if(darkMode !== appData.darkMode) setThemeColor();
+  filterMessageList();
   saveLocalStorage();
 }
 
@@ -355,10 +388,13 @@ function setModalValues(){
   waveformSelect.value = appData.waveform;
   waveformSelect2.value = appData.waveform2;
   darkModeSwitch.checked = appData.darkMode;
+  messageTypeSelect.value = appData.messageType;
   durationNumber.value = appData.duration;
   timerMinutesNumber.value = appData.timerMinutes;
   if(appData.audio && isStarted) setAudio(); //set if true
-  setBackground();
+  filterMessageList();
+  setThemeColor();
+  saveLocalStorage();
 }
 
 function resetDefaults(){
@@ -368,12 +404,26 @@ function resetDefaults(){
   appData.waveform = 'triangle';
   appData.waveform2 = 'triangle';
   appData.darkMode = false;
-  appData.duration = 5;
+  appData.messageType = 'all';
+  appData.duration = 10;
   appData.timerMinutes = 5;
   setModalValues();
 }
 
 // --- Helper Functions ---
+function filterMessageList(){
+  if(appData.messageType === 'all'){
+    selectedMessages = messageList;
+  }else{
+    selectedMessages = messageList.filter(m => m.tags.includes(appData.messageType));
+  }
+}
+
+function setIsMobile(){
+  const ua = navigator.userAgent;
+  isMobile = /Android|iPhone|iPad|iPod|Opera Mini|IEMobile/i.test(ua) || (navigator.maxTouchPoints > 0);
+};
+
 function getRandomIndex(list, lastIndex, uniqueOnly=true){
   // Select Random
   let index = Math.floor(Math.random() * list.length);
@@ -385,10 +435,15 @@ function getRandomIndex(list, lastIndex, uniqueOnly=true){
 }
 
 function getPrefix(){
-  const messagePrefixes = messageList[appData.msgIndex].prefixes;
-  let prefix = prefixes[appData.prefixIndex];
+  const messagePrefixes = selectedMessages[appData.msgIndex].prefixes;
+  let prefix = prefixes[appData.prefixIndex]; //random from list
+  // Has prefixes assigned
   if(messagePrefixes.length>0){
-    prefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
+    const assignedPrefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
+    //If assignedPrefix returns 'all' then use random from prefixes list above  else
+    if(assignedPrefix!=='all'){
+      prefix = assignedPrefix;
+    }
   }
   return prefix;
 }
@@ -396,15 +451,15 @@ function getPrefix(){
 function changeText(){
   const seconds = appData.duration;
   const duration = seconds * 1000;
-  appData.msgIndex = getRandomIndex(messageList, appData.msgIndex);
+  appData.msgIndex = getRandomIndex(selectedMessages, appData.msgIndex);
   appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
   appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
   appData.prefixIndex = getRandomIndex(prefixes, appData.prefixIndex, false);
-  //appData.msgIndex = messageList.length-1; // For testing last
+  //appData.msgIndex = selectedMessages.length-1; // For testing last
   // Prefix
   const prefix = getPrefix();
   // Message
-  const message = messageList[appData.msgIndex].message;
+  const message = selectedMessages[appData.msgIndex].message;
   affirmationText.innerHTML = `${prefix} ${message}`;
   // Color
   const fillColor = fill[appData.fillIndex];
@@ -422,15 +477,30 @@ function changeText(){
 
 // --- Audio ---
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+const compressor = ctx.createDynamicsCompressor();
+//const compset = {threshold:-24, knee:30, ratio:12, attack:0.003, release:0.25};
+const compset = {threshold:-30, knee:40, ratio:4, attack:0.01, release:0.25};
+compressor.threshold.setValueAtTime(compset.threshold, ctx.currentTime); // Point where compression kicks in
+compressor.knee.setValueAtTime(compset.knee, ctx.currentTime);      // Softens the transition
+compressor.ratio.setValueAtTime(compset.ratio, ctx.currentTime);     // How much it squashes the peaks
+compressor.attack.setValueAtTime(compset.attack, ctx.currentTime); // Fast attack to catch peaks
+compressor.release.setValueAtTime(compset.release, ctx.currentTime); // Smooth release
+
+const lowBoost = ctx.createBiquadFilter();
+lowBoost.type = "lowshelf";
+lowBoost.frequency.setValueAtTime(250, ctx.currentTime);
+lowBoost.gain.setValueAtTime(6, ctx.currentTime); // +6dB boost to lows
+
 // Master gain to control overall volume
 const master = ctx.createGain();
 master.gain.value = 0.6;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
-function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8) {
+function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8, isAlarm=false) {
   const ramp = Math.min(duration/2, 2);
-  if(!appData.audio || !isVisible) return;
+  if((!appData.audio || !isVisible) && !isAlarm) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, startTime);
@@ -441,7 +511,13 @@ function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8
   pan.pan.setValueAtTime(panValue, startTime);
   osc.frequency.value = freq;
   osc.type = waveform;
-  osc.connect(pan).connect(gain).connect(master);
+  if(isMobile){
+    osc.connect(pan).connect(gain).connect(lowBoost).connect(compressor).connect(master);
+  }else{
+    //No low boost
+    osc.connect(pan).connect(gain).connect(compressor).connect(master);
+  }
+  
   osc.start(startTime);
   osc.stop(startTime + duration);
   osc.onended = () => {
@@ -505,14 +581,38 @@ function closeModal() {
   document.getElementById('modalBackdrop').style.display = 'none';
 }
 
-// --- localStorage ---
+// --- Toast ---
+function addLettersOneByOne(text, delay) {
+  let index = 0;
+  clearTimeout(letterTimeout);
+  function addNextLetter() {
+    if (index < text.length) {
+      const letter = text.charAt(index);
+      toast.textContent += letter;
+      index++;
+      let writeDelay = (letter===' ')? (delay*4):delay;
+      letterTimeout = setTimeout(addNextLetter, writeDelay);
+    }
+  }
+  addNextLetter();
+}
+
+function showToast(message, type = 'info', duration = 3000) {
+  toast.textContent = '';
+  addLettersOneByOne(message, 60);
+  toast.className = `toast show ${type}`;
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => {toast.classList.remove('show');}, duration);
+}
+
+// --- Local Storage ---
 function saveLocalStorage(){
   const json = JSON.stringify(appData);
   localStorage.setItem(localStorageName, json);
 }
 
-function onLoad(){  
-  setModalValues();  
+function onLoad(){
+  setModalValues();
   openModal('startModel');
 }
 
@@ -543,13 +643,13 @@ function loadLocalStorage(){
 }
 
 function init(){
+  setIsMobile();
   loadLocalStorage();
 }
 
 init();
 
 /*
-Notes:
 Original Six Frequencies
 396 Hz: Liberating Guilt and Fear
 417 Hz: Undoing Situations and Facilitating Change
