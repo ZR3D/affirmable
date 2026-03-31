@@ -76,7 +76,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 </head>
 
 <body>
-  
+
 <div id="mainContainer" class="main-container">
     <div id="circleBackground" class="circle-background">
       <div id="affirmationText" class="affirmation-text">click circle for settings</div>
@@ -126,7 +126,7 @@ input:checked + .slider:before {transform: translateX(25px);}
         <label class="modal-label">Delete</label>
         <button id="deleteMessageButton" class="dom-ctrl">Delete Message</button>
       </div>
-      
+
     </div>
 
     <div id="settingsModel" class="modal-section hidden">
@@ -466,7 +466,7 @@ function setDataFromModal(){
   appData.duration = Number(durationNumber.value);
   appData.timerMinutes= Number(timerMinutesNumber.value);
   //appData.messages
-  
+
   if((audio !== appData.audio) && appData.audio) setAudio();
   if(darkMode !== appData.darkMode) setThemeColor();
   filterMessageList();
@@ -591,7 +591,7 @@ function getPrefix(){
 
 const msg = {messageList:[], index:0, length:0, isMultiline:false};
 
-function setMsg(){  
+function setMsg(){
   const message = selectedMessages[appData.msgIndex];
   msg.messageList = message.message.split('|');
   msg.index = 0;
@@ -602,17 +602,17 @@ function setMsg(){
 function getMessage(){
   let messageText;
   let changeColor = false;
-  
+
   //if the message index is greater or equal to the length find next
   if(msg.index >= msg.length){
     appData.msgIndex = getRandomIndex(selectedMessages, appData.msgIndex);
     setMsg();
     changeColor = true;
-  } 
-  
+  }
+
   messageText = msg.messageList[msg.index];
   msg.index++;
- 
+
   if(msg.isMultiline){
     createDots(msg.length, msg.index-1);
   }else{
@@ -628,10 +628,10 @@ function changeText(){
   for(let i=0; i<10; i++){
     const message = getMessage();
     console.log('message text:', message.messageText, message.changeColor, msg);
-    
+
   }
   */
-  
+
   dots.innerHTML = '';
   const seconds = appData.duration;
   const duration = seconds * 1000;
@@ -658,7 +658,7 @@ function changeText(){
 
   // Loop
   const timeout = setTimeout(changeText, duration);
- 
+
 }
 
 // --- Audio ---
@@ -868,10 +868,10 @@ function populateMessageSelector(){
   appData.messages.forEach((message,index) => {
     const option = document.createElement('option');
     let optionText = message.prefix + message.message.split('|')[0];
-    option.text = message.message.substring(0, 30).trim().replace(/\|/g,' ');  
+    option.text = message.message.substring(0, 30).trim().replace(/\|/g,' ');
     option.value = index;
-    dom.ctrl.messageSelector.add(option);    
-  });  
+    dom.ctrl.messageSelector.add(option);
+  });
 }
 
 function updateMessageLine(messageList, index){
@@ -881,17 +881,25 @@ function updateMessageLine(messageList, index){
   }else{
     dom.ctrl[`messageLine${index}Input`].value = '';
   }
-} 
+}
 
 function messageSelectorChange(){
   const id = dom.ctrl.messageSelector.value;
   const message = appData.messages[id];
-  const messageList = message.message.split('|');  
+  const messageList = message.message.split('|');
   updateMessageLine(messageList, 1);
   updateMessageLine(messageList, 2);
   updateMessageLine(messageList, 3);
-  dom.ctrl.tagsInput.value = message.tags;  
-  dom.ctrl.prefixesInput.value = message.prefixes;  
+  dom.ctrl.tagsInput.value = message.tags;
+  dom.ctrl.prefixesInput.value = message.prefixes;
+}
+
+function saveMessage(){
+
+}
+
+function deleteMessage(){
+
 }
 
 function initDomReferences(){
@@ -903,13 +911,12 @@ function initDomReferences(){
     });
   });
   console.log(dom);
-  
+
   // Event Listeners
   dom.btn.messageSettingsButton.addEventListener('click', () => openModal('messageSettingsModel'));
   dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
   dom.ctrl.saveMessageButton.addEventListener('click', saveMessage);
   dom.ctrl.deleteMessageButton.addEventListener('click', deleteMessage);
-  
 }
 
 function init(){
