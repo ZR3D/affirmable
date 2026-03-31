@@ -5,18 +5,12 @@
 <title>Affirmable</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
-<meta name="theme-color" content="#414754" />
+<meta name="theme-color" content="#E6ECFA" />
 <meta name="color-scheme" content="dark" />
 <style>
-:root {
-  --app-theme-color: #414754;
-}
-[data-theme="light"] {
-  --app-theme-color: #E6ECFA;
-}
-[data-theme="dark"] {
-  --app-theme-color: #414754;
-}
+:root {--app-theme-color: #414754;}
+[data-theme="light"] {--app-theme-color: #E6ECFA;}
+[data-theme="dark"] {--app-theme-color: #414754;}
 @font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
 body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: var(--app-theme-color);}
@@ -42,7 +36,7 @@ button:hover {background: #5b778d;}
 .modal .start-container{display:flex; justify-content:center; margin-bottom:0px; width:auto !important;}
 .start-button{width: 280px; height:280px; border-radius: 50%; font-family:'Nunito'; font-size:2rem; border:20px solid #f1f1f1;}
 .circle-background {display:flex; flex-direction:column; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;}
-.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px; hyphens:auto;}
+.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;} /* hyphens:auto; */
 /* --- Toggle switch --- */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
@@ -64,6 +58,13 @@ input:checked + .slider:before {transform: translateX(25px);}
 @keyframes timer-animation-keyframes {
   0% {width:1px; height:1px; opacity: 0.5; border-width:2px;}
   100% {width:900px; height:900px; opacity:0; border-width:20px;}
+}
+.fade-in-word {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+.fade-in-word.show {
+  opacity: 1;
 }
 /* --- Toast --- */
 .toast{font-family: sans-serif; z-index: 1100;  position: fixed;  bottom: 0px;  left: 0px;  width: 100%;  margin: 0px;  padding: 10px 20px;  color: #ffffff;  font-size: 0.9rem;  transition: opacity 0.3s ease;  opacity: 0;  pointer-events: none; background:#12345678;}
@@ -87,9 +88,8 @@ input:checked + .slider:before {transform: translateX(25px);}
 <div class="modal-backdrop" id="modalBackdrop">
   <div id="modal" class="modal modal-start">
     <div id="startModel" class="modal-section start-container hidden">
-      <button id="startButton" class="start-button">Start</button>
+      <button id="startButton" class="start-button dom-btn">Start</button>
     </div>
-
 
     <div id="messageSettingsModel" class="modal-section hidden">
       <span class="close close-button">&times;</span>
@@ -116,18 +116,21 @@ input:checked + .slider:before {transform: translateX(25px);}
       </div>
       <div>
         <label class="modal-label">&nbsp;</label>
-        <button id="saveMessageButton" class="dom-ctrl">Save</button>
-        <button id="saveAsNewMessageButton" class="dom-ctrl">Save As New</button>
+        <button id="saveMessageButton" class="dom-btn">Save</button>
+        <button id="saveAsNewMessageButton" class="dom-btn">Save As New</button>
       </div>
-      <div>
+      <div>        
+        <label class="modal-label">Filter by Tag</label>
+        <select id="tagSelect" class="dom-ctrl"></select>
+      </div>
+      <div>        
         <label class="modal-label">Messages</label>
         <select id="messageSelector" class="dom-ctrl"></select>
       </div>
       <div>
         <label class="modal-label">Delete</label>
-        <button id="deleteMessageButton" class="dom-ctrl">Delete Message</button>
+        <button id="deleteMessageButton" class="dom-btn">Delete Message</button>
       </div>
-
     </div>
 
     <div id="settingsModel" class="modal-section hidden">
@@ -184,18 +187,18 @@ input:checked + .slider:before {transform: translateX(25px);}
     <div>
       <label class="modal-label">Timer</label>
       <input id="timerMinutesNumber" type="number" value="1" min="1">
-      <button id="startTimerButton">Start</button>
-      <button id="stopTimerButton">Stop</button>
+      <button id="startTimerButton" class="dom-btn">Start</button>
+      <button id="stopTimerButton" class="dom-btn">Stop</button>
     </div>
     <div>
       <label class="modal-label">Data</label>
-      <button id="importDataButton">Import</button>
-      <button id="exportDataButton">Export</button>
+      <button id="importDataButton" class="dom-btn">Import</button>
+      <button id="exportDataButton" class="dom-btn">Export</button>
       <input id="hiddenFileInput" type="file" class="dom-ctrl hidden"/>
     </div>
     <div class="button-modal-container">
       <button class="close-button">Close</button>
-      <button id="resetDefaultsButton">Reset Defaults</button>
+      <button id="resetDefaultsButton" class="dom-btn">Reset Defaults</button>
     </div>
     </div>
   </div>
@@ -224,6 +227,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 let timerTimeout;
 let toastTimeout;
 let letterTimeout;
+let wordTimeout;
 let isMobile;
 let isStarted = false;
 let isVisible = true;
@@ -356,24 +360,16 @@ const waveformSelect2 = document.getElementById('waveformSelect2');
 const darkModeSwitch = document.getElementById('darkModeSwitch');
 const messageTypeSelect = document.getElementById('messageTypeSelect');
 const durationNumber = document.getElementById('durationNumber');
-const defaultdurationButton = document.getElementById('defaultdurationButton');
 const closeButtons = document.querySelectorAll('.close-button');
 const toggleSwitches = document.querySelectorAll('.switch input');
-const startButton = document.getElementById('startButton');
 const timerMinutesNumber = document.getElementById('timerMinutesNumber');
-const startTimerButton = document.getElementById('startTimerButton');
-const stopTimerButton = document.getElementById('stopTimerButton');
 const timerContainer = document.getElementById('timerContainer');
 const timerCircle = document.getElementById('timerCircle');
 const dots = document.getElementById('dots');
 const modal = document.getElementById('modal');
 const toast = document.getElementById('toast');
-const exportDataButton = document.getElementById('exportDataButton');
-const importDataButton = document.getElementById('importDataButton');
-const hiddenFileInput = document.getElementById('hiddenFileInput');
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
-
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 
@@ -388,19 +384,12 @@ durationNumber.addEventListener('input', setDataFromModal);
 audioSwitch.addEventListener('change', setDataFromModal);
 darkModeSwitch.addEventListener('change', setDataFromModal);
 timerMinutesNumber.addEventListener('input', setDataFromModal);
-resetDefaultsButton.addEventListener('click', resetDefaults);
-startButton.addEventListener('click', start);
-startTimerButton.addEventListener('click', startTimer);
-stopTimerButton.addEventListener('click', stopTimer);
 timerCircle.addEventListener('animationend', stopTimer);
-exportDataButton.addEventListener('click', exportData);
-importDataButton?.addEventListener('click', () => hiddenFileInput?.click());
-hiddenFileInput?.addEventListener('change', importData);
-
 
 closeButtons.forEach(closeButton => {
   closeButton.onclick = () => closeModal();
 });
+
 document.addEventListener("visibilitychange", () => {
   let gainValue = 0;
   if(document.hidden) {
@@ -467,8 +456,6 @@ function setDataFromModal(){
   appData.messageType = messageTypeSelect.value;
   appData.duration = Number(durationNumber.value);
   appData.timerMinutes= Number(timerMinutesNumber.value);
-  //appData.messages
-
   if((audio !== appData.audio) && appData.audio) setAudio();
   if(darkMode !== appData.darkMode) setThemeColor();
   filterMessageList();
@@ -531,7 +518,8 @@ function getTags(){
     option.text = capitalizeFirstLetter(tag);
     option.value = tag;
     if(tag===appData.messageType) option.selected = true;
-    messageTypeSelect.add(option);
+    messageTypeSelect.add(option);    
+    dom.ctrl.tagSelect.add(option.cloneNode(true));
   });
 }
 
@@ -595,7 +583,7 @@ function getPrefix(){
 const msg = {messageList:[], index:0, length:0, isMultiline:false};
 
 function setMsg(){
-  if(appData.msgIndex >= selectedMessages.length-1) appData.msgIndex = 0;
+  if(appData.msgIndex > selectedMessages.length-1) appData.msgIndex = 0;
   const message = selectedMessages[appData.msgIndex];
   msg.messageList = message.message.split('|');
   msg.index = 0;
@@ -628,16 +616,34 @@ function getMessage(){
   return {messageText, changeColor}
 }
 
-function changeText(){
-  /*
-  for(let i=0; i<10; i++){
-    const message = getMessage();
-    console.log('message text:', message.messageText, message.changeColor, msg);
-
+function addWordsOneByOne(el, message, delay) {
+  const words = message.split(' ');
+  let index = 0;
+  let spanList = [];
+  // Add the paragraph first
+  words.forEach(word => {
+    const span = document.createElement('span');
+    span.className = 'fade-in-word';
+    span.textContent = word + ' ';
+    spanList.push(span)
+    el.appendChild(span);
+  }); 
+  // Then fade in
+  clearTimeout(wordTimeout);
+  function showNextWord() {
+    if (index < spanList.length) {
+      const span = spanList[index];
+      span.classList.add('show')
+      index++;
+      wordTimeout = setTimeout(showNextWord, delay);
+    }
   }
-  */
+  setTimeout(showNextWord, delay);
+}
 
+function changeText(){
   dots.innerHTML = '';
+  affirmationText.innerHTML = '';
   const seconds = appData.duration;
   const duration = seconds * 1000;
   const overlapSeconds = 4;
@@ -646,7 +652,8 @@ function changeText(){
 
   // Message
   const message = getMessage();
-  affirmationText.innerHTML = message.messageText;
+  //affirmationText.innerHTML = message.messageText;
+  addWordsOneByOne(affirmationText, message.messageText, 300)
 
   // Color
   if(message.changeColor){
@@ -660,10 +667,8 @@ function changeText(){
   }else{
     playUnison(frequency, ctx.currentTime, seconds+overlapSeconds);
   }
-
   // Loop
   const timeout = setTimeout(changeText, duration);
-
 }
 
 // --- Audio ---
@@ -772,13 +777,13 @@ function closeModal() {
 }
 
 // --- Toast ---
-function addLettersOneByOne(text, delay) {
+function addLettersOneByOne(el, text, delay) {
   let index = 0;
   clearTimeout(letterTimeout);
   function addNextLetter() {
     if (index < text.length) {
       const letter = text.charAt(index);
-      toast.textContent += letter;
+      el.textContent += letter;
       index++;
       let writeDelay = (letter===' ')? (delay*4):delay;
       letterTimeout = setTimeout(addNextLetter, writeDelay);
@@ -789,7 +794,7 @@ function addLettersOneByOne(text, delay) {
 
 function showToast(message, type = 'info', duration = 3000) {
   toast.textContent = '';
-  addLettersOneByOne(message, 60);
+  addLettersOneByOne(toast, message, 60);
   toast.className = `toast show ${type}`;
   clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {toast.classList.remove('show');}, duration);
@@ -855,12 +860,12 @@ function loadLocalStorage(){
     try {
       const data = JSON.parse(local);
       Object.assign(appData, data);
-      console.log('Loading local data');
+      showToast('Loading local data');
       onLoad();
     } catch (e) {
       saveLocalStorage();
       onLoad();
-      console.log('Local data unavailable, using default');
+      showToast('Local data unavailable, using default');
     }
   }else{
     saveLocalStorage();
@@ -906,7 +911,7 @@ function getCommaSeperated(str){
   if(str!==''){
     const strList = str.split(',');
     strList.forEach(item =>{
-      item = item.trim();
+      item = item.trim().toLowerCase();
       if(item!=='') newList.push(item)
     });
   }
@@ -918,7 +923,7 @@ function saveMessage(){
   for(let i=1; i<4; i++){
     const separator = (i===1)? '':'|';
     const line = dom.ctrl[`messageLine${i}Input`].value;
-    if(line!=='') message += separator + line;
+    if(line!=='') message += separator + line.toLowerCase();
   }
   const prefixes = getCommaSeperated(dom.ctrl.prefixesInput.value);
   const tags = getCommaSeperated(dom.ctrl.tagsInput.value); 
@@ -948,6 +953,8 @@ function deleteMessage(){
   populateMessageSelector();
   getTags();
   filterMessageList();
+  saveLocalStorage();
+  showToast('Message Deleted');
 }
 
 function initDomReferences(){
@@ -958,13 +965,20 @@ function initDomReferences(){
       dom[ref][el.id] = document.getElementById(el.id);
     });
   });
-
-  // Event Listeners
-  dom.btn.messageSettingsButton.addEventListener('click', () => openModal('messageSettingsModel'));
+  // Event Listeners  
   dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
-  dom.ctrl.saveMessageButton.addEventListener('click', saveMessage);
-  dom.ctrl.saveAsNewMessageButton.addEventListener('click', saveAsNewMessage);
-  dom.ctrl.deleteMessageButton.addEventListener('click', deleteMessage);
+  dom.ctrl.hiddenFileInput?.addEventListener('change', importData);
+  // Buttons
+  dom.btn.startButton.addEventListener('click', start);
+  dom.btn.saveMessageButton.addEventListener('click', saveMessage);
+  dom.btn.saveAsNewMessageButton.addEventListener('click', saveAsNewMessage);
+  dom.btn.deleteMessageButton.addEventListener('click', deleteMessage);
+  dom.btn.messageSettingsButton.addEventListener('click', () => openModal('messageSettingsModel'));
+  dom.btn.exportDataButton.addEventListener('click', exportData);
+  dom.btn.importDataButton?.addEventListener('click', () => dom.ctrl.hiddenFileInput?.click()); 
+  dom.btn.startTimerButton.addEventListener('click', startTimer);
+  dom.btn.stopTimerButton.addEventListener('click', stopTimer);  
+  dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults); 
 }
 
 function init(){
