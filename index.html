@@ -5,11 +5,11 @@
 <title>Affirmable</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
-<meta name="theme-color" content="#E6ECFA" />
+<meta name="theme-color" content="#414754" />
 <meta name="color-scheme" content="dark" />
 <style>
 :root {
-  --app-theme-color: #E6ECFA;
+  --app-theme-color: #414754;
 }
 [data-theme="light"] {
   --app-theme-color: #E6ECFA;
@@ -117,6 +117,7 @@ input:checked + .slider:before {transform: translateX(25px);}
       <div>
         <label class="modal-label">&nbsp;</label>
         <button id="saveMessageButton" class="dom-ctrl">Save</button>
+        <button id="saveAsNewMessageButton" class="dom-ctrl">Save As New</button>
       </div>
       <div>
         <label class="modal-label">Messages</label>
@@ -174,7 +175,7 @@ input:checked + .slider:before {transform: translateX(25px);}
     <div>
       <label class="modal-label">Messages</label>
       <select id="messageTypeSelect"></select>
-      <button id="messageSettingsButton" class="dom-btn">Message Settings</button>
+      <button id="messageSettingsButton" class="dom-btn">Edit</button>
     </div>
     <div>
       <label class="modal-label">Duration</label>
@@ -227,6 +228,7 @@ let isMobile;
 let isStarted = false;
 let isVisible = true;
 let selectedMessages = [];
+let currentMessageId = '';
 const dom = {div:{},ctrl:{},el:{},btn:{}};
 const appData = {
   messageType: 'all',
@@ -530,7 +532,7 @@ function getTags(){
     option.value = tag;
     if(tag===appData.messageType) option.selected = true;
     messageTypeSelect.add(option);
-  })
+  });
 }
 
 function filterMessageList(){
@@ -539,6 +541,7 @@ function filterMessageList(){
   }else{
     selectedMessages = appData.messages.filter(m => m.tags.includes(appData.messageType));
   }
+  if(appData.msgIndex >= selectedMessages.length-1) appData.msgIndex = 0;
 }
 
 function setIsMobile(){
@@ -592,11 +595,12 @@ function getPrefix(){
 const msg = {messageList:[], index:0, length:0, isMultiline:false};
 
 function setMsg(){
+  if(appData.msgIndex >= selectedMessages.length-1) appData.msgIndex = 0;
   const message = selectedMessages[appData.msgIndex];
   msg.messageList = message.message.split('|');
   msg.index = 0;
   msg.length = msg.messageList.length;
-  msg.isMultiline = (message.multiline)? true:false;
+  //msg.isMultiline = (message.multiline)? true:false;
 }
 
 function getMessage(){
@@ -613,7 +617,8 @@ function getMessage(){
   messageText = msg.messageList[msg.index];
   msg.index++;
 
-  if(msg.isMultiline){
+  //multiline
+  if(msg.length>1){
     createDots(msg.length, msg.index-1);
   }else{
     const prefix = getPrefix();
@@ -832,8 +837,8 @@ function saveLocalStorage(){
 function onLoad(){
   setModalValues();
   openModal('startModel');
-  //appData.msgIndex = selectedMessages.length-1; // For testing last
   setMsg();
+  getTags();
 }
 
 // Begin button as audio requires a user gesture
@@ -885,6 +890,7 @@ function updateMessageLine(messageList, index){
 
 function messageSelectorChange(){
   const id = dom.ctrl.messageSelector.value;
+  currentMessageId = id;
   const message = appData.messages[id];
   const messageList = message.message.split('|');
   updateMessageLine(messageList, 1);
@@ -894,12 +900,54 @@ function messageSelectorChange(){
   dom.ctrl.prefixesInput.value = message.prefixes;
 }
 
-function saveMessage(){
+function getCommaSeperated(str){
+  const newList = [];
+  str = str.trim();
+  if(str!==''){
+    const strList = str.split(',');
+    strList.forEach(item =>{
+      item = item.trim();
+      if(item!=='') newList.push(item)
+    });
+  }
+  return newList;
+}
 
+function saveMessage(){
+  let message = '';
+  for(let i=1; i<4; i++){
+    const separator = (i===1)? '':'|';
+    const line = dom.ctrl[`messageLine${i}Input`].value;
+    if(line!=='') message += separator + line;
+  }
+  const prefixes = getCommaSeperated(dom.ctrl.prefixesInput.value);
+  const tags = getCommaSeperated(dom.ctrl.tagsInput.value); 
+  const messageData = {message, prefixes, tags};
+  console.log(messageData);  
+  if(currentMessageId===-1){   
+    appData.messages.push(messageData);
+    filterMessageList();  
+    showToast('Message Added!');
+  }else{
+    appData.messages[currentMessageId] = messageData; 
+    showToast('Message Updated!'); 
+  }
+  populateMessageSelector();
+  getTags();
+  filterMessageList();
+  saveLocalStorage(); 
+}
+
+function saveAsNewMessage(){
+  currentMessageId = -1;
+  saveMessage();
 }
 
 function deleteMessage(){
-
+  appData.messages.splice(currentMessageId, 1);
+  populateMessageSelector();
+  getTags();
+  filterMessageList();
 }
 
 function initDomReferences(){
@@ -910,20 +958,19 @@ function initDomReferences(){
       dom[ref][el.id] = document.getElementById(el.id);
     });
   });
-  console.log(dom);
 
   // Event Listeners
   dom.btn.messageSettingsButton.addEventListener('click', () => openModal('messageSettingsModel'));
   dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
   dom.ctrl.saveMessageButton.addEventListener('click', saveMessage);
+  dom.ctrl.saveAsNewMessageButton.addEventListener('click', saveAsNewMessage);
   dom.ctrl.deleteMessageButton.addEventListener('click', deleteMessage);
 }
 
 function init(){
-  initDomReferences();
-  getTags();
+  initDomReferences();  
   setIsMobile();
-  loadLocalStorage();
+  loadLocalStorage();  
   populateMessageSelector();
 }
 
