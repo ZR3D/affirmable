@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <link rel="icon" href="data:image/svg+xml;charset=UTF-8,%3Csvg%20version%3D%221.1%22%20viewBox%3D%220%200%2024%2024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%233a5cab%22%2F%3E%0A%20%3Cg%20fill%3D%22%23a3b8ea%22%3E%0A%20%20%3Crect%20x%3D%222.911%22%20y%3D%228.24558%22%20width%3D%2218.178%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%223.466404%22%20y%3D%2213.46446%22%20width%3D%228.178439%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%20%3Crect%20x%3D%2214.47526%22%20y%3D%2213.4942%22%20width%3D%225%22%20height%3D%222.260223%22%20rx%3D%22.5147059%22%20ry%3D%22.6%22%2F%3E%0A%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
 <meta name="theme-color" content="#E6ECFA" />
+<meta name="color-scheme" content="dark" />
 <style>
 :root {
   --app-theme-color: #E6ECFA;
@@ -20,8 +21,8 @@
 *{box-sizing:border-box;}
 body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: var(--app-theme-color);}
 /* padding-bottom: env(safe-area-inset-bottom); */
-select, input{border-radius: 4px; border:none; padding:0.33rem; background:#fff; margin-right:0.5rem; font-size: 12px;}
-input{font-size: 12px;}
+select, input{border-radius: 4px; border:none; padding:0.33rem; background:#fff; margin-right:0.5rem; font-size: 12px; color: #333;}
+input{font-size: 12px; color: #333;}
 input[type=number]{width:3rem;}
 .main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease; background: var(--app-theme-color)}
 .dark-mode-background-color{background: #414754;}
@@ -33,14 +34,14 @@ input[type=number]{width:3rem;}
 .modal .close:hover {color:#000;}
 .modal div{margin-bottom:10px;}
 .modal-label{width:80px; display:inline-block; vertical-align: middle;}
-.modal-start{background:none; box-shadow:none; padding:1rem; }
+.modal-start{background:none; box-shadow:none; padding:1rem;}
 .button-modal-container{text-align: center; margin-top:20px;}
 /* Button */
 button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
 button:hover {background: #5b778d;}
 .modal .start-container{display:flex; justify-content:center; margin-bottom:0px; width:auto !important;}
 .start-button{width: 280px; height:280px; border-radius: 50%; font-family:'Nunito'; font-size:2rem; border:20px solid #f1f1f1;}
-.circle-background {  display:flex; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;}
+.circle-background {display:flex; flex-direction:column; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;}
 .affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px; hyphens:auto;}
 /* --- Toggle switch --- */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
@@ -68,12 +69,18 @@ input:checked + .slider:before {transform: translateX(25px);}
 .toast{font-family: sans-serif; z-index: 1100;  position: fixed;  bottom: 0px;  left: 0px;  width: 100%;  margin: 0px;  padding: 10px 20px;  color: #ffffff;  font-size: 0.9rem;  transition: opacity 0.3s ease;  opacity: 0;  pointer-events: none; background:#12345678;}
 .toast.show {opacity: 1;  pointer-events: auto;}
 .hidden, .modal .hidden{display:none;}
+.dots{margin-top: 70vmin; position: fixed; display:flex;}
+.dots div{background:#f1f1f1; border-radius:50%; width:2vmin; height:2vmin; margin:0vmin 1vmin; opacity:0.5; transition: opacity 1s ease;}
+.dots .dot-active{opacity:0.8;}
 </style>
 </head>
+
 <body>
+  
 <div id="mainContainer" class="main-container">
     <div id="circleBackground" class="circle-background">
       <div id="affirmationText" class="affirmation-text">click circle for settings</div>
+      <div id="dots" class="dots"></div>
     </div>
 </div>
 
@@ -83,7 +90,46 @@ input:checked + .slider:before {transform: translateX(25px);}
       <button id="startButton" class="start-button">Start</button>
     </div>
 
-    <div id="settingsModel" class="modal-section settings-container hidden">
+
+    <div id="messageSettingsModel" class="modal-section hidden">
+      <span class="close close-button">&times;</span>
+      <h2>Message Settings</h2>
+      <div>
+        <label class="modal-label">Prefixes</label>
+        <input id="prefixesInput" type="text" class="dom-ctrl" placeholder="Prefixes comma separated">
+      </div>
+      <div>
+        <label class="modal-label">Line 1</label>
+        <input id="messageLine1Input" type="text" class="dom-ctrl" placeholder="Message line 1">
+      </div>
+      <div>
+        <label class="modal-label">Line 2</label>
+        <input id="messageLine2Input" type="text" class="dom-ctrl" placeholder="Message line 2">
+      </div>
+      <div>
+        <label class="modal-label">Line 3</label>
+        <input id="messageLine3Input" type="text" class="dom-ctrl" placeholder="Message line 3">
+      </div>
+      <div>
+        <label class="modal-label">Tags</label>
+        <input id="tagsInput" type="text" class="dom-ctrl" placeholder="Tags comma separated">
+      </div>
+      <div>
+        <label class="modal-label">&nbsp;</label>
+        <button id="saveMessageButton" class="dom-ctrl">Save</button>
+      </div>
+      <div>
+        <label class="modal-label">Messages</label>
+        <select id="messageSelector" class="dom-ctrl"></select>
+      </div>
+      <div>
+        <label class="modal-label">Delete</label>
+        <button id="deleteMessageButton" class="dom-ctrl">Delete Message</button>
+      </div>
+      
+    </div>
+
+    <div id="settingsModel" class="modal-section hidden">
     <span class="close close-button">&times;</span>
     <h2>Settings</h2>
     <div>
@@ -127,13 +173,8 @@ input:checked + .slider:before {transform: translateX(25px);}
     </div>
     <div>
       <label class="modal-label">Messages</label>
-      <select id="messageTypeSelect">
-        <option value="all">All</option>
-        <option value="letting go">Letting Go</option>
-        <option value="meditation">Meditation</option>
-        <option value="uplifting">Uplifting</option>
-        <option value="warm">Warm</option>        
-      </select>
+      <select id="messageTypeSelect"></select>
+      <button id="messageSettingsButton" class="dom-btn">Message Settings</button>
     </div>
     <div>
       <label class="modal-label">Duration</label>
@@ -144,6 +185,12 @@ input:checked + .slider:before {transform: translateX(25px);}
       <input id="timerMinutesNumber" type="number" value="1" min="1">
       <button id="startTimerButton">Start</button>
       <button id="stopTimerButton">Stop</button>
+    </div>
+    <div>
+      <label class="modal-label">Data</label>
+      <button id="importDataButton">Import</button>
+      <button id="exportDataButton">Export</button>
+      <input id="hiddenFileInput" type="file" class="dom-ctrl hidden"/>
     </div>
     <div class="button-modal-container">
       <button class="close-button">Close</button>
@@ -170,8 +217,8 @@ input:checked + .slider:before {transform: translateX(25px);}
     link.href = 'manifest.json';
     document.head.appendChild(link);
   }
-})();  
-  
+})();
+
 // --- Global Declarations ---
 let timerTimeout;
 let toastTimeout;
@@ -180,7 +227,121 @@ let isMobile;
 let isStarted = false;
 let isVisible = true;
 let selectedMessages = [];
-const appData = {messageType:'all', duration:10, waveform:'sine', waveform2:'sine', darkMode:false, audio:true, voices:3, voicesShape:'tanh', timerMinutes:5, fillIndex:0, msgIndex:0, prefixIndex:0, freqIndex:0};
+const dom = {div:{},ctrl:{},el:{},btn:{}};
+const appData = {
+  messageType: 'all',
+  duration: 10,
+  waveform: 'sine',
+  waveform2: 'sine',
+  darkMode: false,
+  audio: true,
+  voices: 3,
+  voicesShape: 'tanh',
+  timerMinutes: 5,
+  fillIndex: 0,
+  msgIndex: 0,
+  prefixIndex: 0,
+  freqIndex: 0,
+  lastSaved: '2025-12-01',
+  messages:[
+    {message:'ok', prefixes:['feel'], tags:['uplifting']},
+    {message:'relaxed', prefixes:[], tags:[]},
+    {message:'happy', prefixes:[], tags:['meditation']},
+    {message:'peaceful', prefixes:[], tags:['meditation']},
+    {message:'peace with all', prefixes:['be at'], tags:['meditation']},
+    {message:'still', prefixes:[], tags:['meditation']},
+    {message:'contented', prefixes:[], tags:['meditation']},
+    {message:'tranquil', prefixes:[], tags:['meditation']},
+    {message:'free', prefixes:[], tags:[]},
+    {message:'calm', prefixes:['experience'], tags:['test']},
+    {message:'quiet', prefixes:['feel'], tags:['meditation']},
+    {message:'caring', prefixes:[], tags:[]},
+    {message:'healthy', prefixes:['feel'], tags:[]},
+    {message:'generous', prefixes:[], tags:[]},
+    {message:'kindness', prefixes:['experience'], tags:[]},
+    {message:'accepting', prefixes:[], tags:[]},
+    {message:'forgiving', prefixes:[], tags:[]},
+    {message:'loved', prefixes:['feel'], tags:[]},
+    {message:'loving', prefixes:[], tags:[]},
+    {message:'good in yourself', prefixes:['feel'], tags:[]},
+    {message:'released', prefixes:[], tags:[]},
+    {message:'grateful', prefixes:['feel'], tags:[]},
+    {message:'unburdened', prefixes:[], tags:[]},
+    {message:'easy', prefixes:['free and'], tags:[]},
+    {message:'floaty', prefixes:[], tags:[]},
+    {message:'joyful', prefixes:['be'], tags:[]},
+    {message:'patient', prefixes:['feel'], tags:[]},
+    // From Chatty
+    {message:'compassionate', prefixes:[], tags:[]},
+    {message:'settled', prefixes:[], tags:[]},
+    {message:'steady', prefixes:[], tags:[]},
+    {message:'grounded', prefixes:[], tags:[]},
+    {message:'centred', prefixes:[], tags:[]},
+    {message:'safe', prefixes:['feel'], tags:[]},
+    {message:'supported', prefixes:[], tags:[]},
+    {message:'held', prefixes:[], tags:[]},
+    {message:'embraced', prefixes:[], tags:[]},
+    {message:'balanced', prefixes:[], tags:[]},
+    {message:'at ease', prefixes:[], tags:[]},
+    // Letting go / spacious
+    {message:'open', prefixes:[], tags:['letting go']},
+    {message:'spacious', prefixes:[], tags:['letting go']},
+    {message:'light', prefixes:[], tags:['letting go']},
+    {message:'clear', prefixes:[], tags:['letting go']},
+    {message:'flowing', prefixes:[], tags:['letting go']},
+    {message:'expansive', prefixes:[], tags:['letting go']},
+    // Warm & emotional
+    {message:'warm', prefixes:[], tags:['warm']},
+    {message:'connected', prefixes:[], tags:['warm']},
+    {message:'gentle', prefixes:[], tags:['warm']},
+    {message:'nurtured', prefixes:[], tags:['warm']},
+    {message:'appreciative', prefixes:[], tags:['warm']},
+    {message:'fulfilled', prefixes:[], tags:['warm']},
+    {message:'whole', prefixes:[], tags:['warm']},
+    // Quietly uplifting
+    {message:'bright', prefixes:[], tags:['uplifting']},
+    {message:'refreshed', prefixes:[], tags:['uplifting']},
+    {message:'renewed', prefixes:[], tags:['uplifting']},
+    {message:'uplifted', prefixes:[], tags:['uplifting']},
+    {message:'inspired', prefixes:[], tags:['uplifting']},
+    {message:'hopeful', prefixes:[], tags:['uplifting']},
+    {message:'alive', prefixes:[], tags:['uplifting']},
+    {message:'awake', prefixes:[], tags:['uplifting']},
+    // Mindfulness / awareness
+    {message:'energised', prefixes:[], tags:[]},
+    {message:'aware', prefixes:[], tags:['meditation']},
+    {message:'mindful', prefixes:['all','remain'], tags:['meditation']},
+    {message:'attentive', prefixes:[], tags:['meditation']},
+    {message:'in gently', prefixes:['breathe'], tags:['meditation']},
+    {message:'the breath', prefixes:['focus on'], tags:['meditation']},
+    {message:'curious', prefixes:[], tags:[]},
+    {message:'receptive', prefixes:[], tags:[]},
+    // Multi line
+    {message:'go', prefixes:['let','letting'], tags:[]},
+    {message:'with little', prefixes:['be content'], tags:[]},
+    {message:'mindfulness', prefixes:['experience'], tags:['meditation']},
+    {message:'self harmony', prefixes:['experience'], tags:[]},
+    {message:'with kindness', prefixes:['let go'], tags:['letting go', 'meditation']},
+    {message:'present', prefixes:['stay'], tags:['meditation']},
+    {message:'renewal', prefixes:['allow'], tags:[]},
+    {message:'be hopeful', prefixes:['let yourself'], tags:[]},
+    {message:'be here', prefixes:['choose to'], tags:[]},
+    {message:'breath', prefixes:['notice your'], tags:['meditation']},
+    {message:'here', prefixes:['simply be'], tags:[]},
+    {message:'spacious', prefixes:['just be'], tags:[]},
+    {message:'compassion', prefixes:['open to'], tags:[]},
+    // New
+    {message:'positive', prefixes:[], tags:[]},
+    {message:'optimistic', prefixes:[], tags:[]},
+    {message:'thoughtful', prefixes:[], tags:[]},
+    {message:'contemplative', prefixes:[], tags:[]},
+    {message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
+    {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['test','long'], multiline:true},
+  ],
+    prefixes:['','be','feel','become','being'],
+  };
+const masterGainDefault = 0.6;
+const toneGainDefault = 0.6;
 const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
@@ -202,105 +363,17 @@ const startTimerButton = document.getElementById('startTimerButton');
 const stopTimerButton = document.getElementById('stopTimerButton');
 const timerContainer = document.getElementById('timerContainer');
 const timerCircle = document.getElementById('timerCircle');
+const dots = document.getElementById('dots');
 const modal = document.getElementById('modal');
 const toast = document.getElementById('toast');
+const exportDataButton = document.getElementById('exportDataButton');
+const importDataButton = document.getElementById('importDataButton');
+const hiddenFileInput = document.getElementById('hiddenFileInput');
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
+
 const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
-const prefixes = ['','be','feel','become','being'];
-const messageList = [
-{message:'ok', prefixes:[], tags:[]},
-{message:'relaxed', prefixes:[], tags:[]},
-{message:'happy', prefixes:[], tags:['meditation']},
-{message:'peaceful', prefixes:[], tags:['meditation']},
-{message:'still', prefixes:[], tags:['meditation']},
-{message:'contented', prefixes:[], tags:['meditation']},
-{message:'tranquil', prefixes:[], tags:['meditation']},
-{message:'free', prefixes:[], tags:[]},
-{message:'calm', prefixes:['experience'], tags:[]},
-{message:'quiet', prefixes:['feel'], tags:['meditation']},
-{message:'caring', prefixes:[], tags:[]},
-{message:'healthy', prefixes:['feel'], tags:[]},
-{message:'generous', prefixes:[], tags:[]},
-{message:'kindness', prefixes:['experience'], tags:[]},
-{message:'accepting', prefixes:[], tags:[]},
-{message:'forgiving', prefixes:[], tags:[]},
-{message:'loved', prefixes:['feel'], tags:[]},
-{message:'loving', prefixes:[], tags:[]},
-{message:'good in yourself', prefixes:['feel'], tags:[]},
-{message:'released', prefixes:[], tags:[]},
-{message:'grateful', prefixes:['feel'], tags:[]},
-{message:'unburdened', prefixes:[], tags:[]},
-{message:'easy', prefixes:['free and'], tags:[]},
-{message:'floaty', prefixes:[], tags:[]},
-{message:'joyful', prefixes:['be'], tags:[]},
-{message:'patient', prefixes:['feel'], tags:[]},
-// From Chatty
-{message:'compassionate', prefixes:[], tags:[]},
-{message:'settled', prefixes:[], tags:[]},
-{message:'steady', prefixes:[], tags:[]},
-{message:'grounded', prefixes:[], tags:[]},
-{message:'centred', prefixes:[], tags:[]},
-{message:'safe', prefixes:['feel'], tags:[]},
-{message:'supported', prefixes:[], tags:[]},
-{message:'held', prefixes:[], tags:[]},
-{message:'embraced', prefixes:[], tags:[]},
-{message:'balanced', prefixes:[], tags:[]},
-{message:'at ease', prefixes:[], tags:[]},
-// Letting go / spacious
-{message:'open', prefixes:[], tags:['letting go']},
-{message:'spacious', prefixes:[], tags:['letting go']},
-{message:'light', prefixes:[], tags:['letting go']},
-{message:'clear', prefixes:[], tags:['letting go']},
-{message:'flowing', prefixes:[], tags:['letting go']},
-{message:'expansive', prefixes:[], tags:['letting go']},
-// Warm & emotional
-{message:'warm', prefixes:[], tags:['warm']},
-{message:'connected', prefixes:[], tags:['warm']},
-{message:'gentle', prefixes:[], tags:['warm']},
-{message:'nurtured', prefixes:[], tags:['warm']},
-{message:'appreciative', prefixes:[], tags:['warm']},
-{message:'fulfilled', prefixes:[], tags:['warm']},
-{message:'whole', prefixes:[], tags:['warm']},
-// Quietly uplifting
-{message:'bright', prefixes:[], tags:['uplifting']},
-{message:'refreshed', prefixes:[], tags:['uplifting']},
-{message:'renewed', prefixes:[], tags:['uplifting']},
-{message:'uplifted', prefixes:[], tags:['uplifting']},
-{message:'inspired', prefixes:[], tags:['uplifting']},
-{message:'hopeful', prefixes:[], tags:['uplifting']},
-{message:'alive', prefixes:[], tags:['uplifting']},
-{message:'awake', prefixes:[], tags:['uplifting']},
-// Mindfulness / awareness
-{message:'energised', prefixes:[], tags:[]},
-{message:'aware', prefixes:[], tags:['meditation']},
-{message:'mindful', prefixes:['all','remain'], tags:['meditation']},
-{message:'attentive', prefixes:[], tags:['meditation']},
-{message:'in gently', prefixes:['breathe'], tags:['meditation']},
-{message:'the breath', prefixes:['focus on'], tags:['meditation']},
-{message:'curious', prefixes:[], tags:[]},
-{message:'receptive', prefixes:[], tags:[]},
-// Multi line
-{message:'go', prefixes:['let','letting'], tags:[]},
-{message:'with little', prefixes:['be content'], tags:[]},
-{message:'mindfulness', prefixes:['experience'], tags:['meditation']},
-{message:'self harmony', prefixes:['experience'], tags:[]},
-{message:'with kindness', prefixes:['let go'], tags:['letting go', 'meditation']},
-{message:'present', prefixes:['stay'], tags:['meditation']},
-{message:'renewal', prefixes:['allow'], tags:[]},
-{message:'be hopeful', prefixes:['let yourself'], tags:[]},
-{message:'be here', prefixes:['choose to'], tags:[]},
-{message:'breath', prefixes:['notice your'], tags:['meditation']},
-{message:'here', prefixes:['simply be'], tags:[]},
-{message:'spacious', prefixes:['just be'], tags:[]},
-{message:'compassion', prefixes:['open to'], tags:[]},
-// New
-{message:'positive', prefixes:[], tags:[]},
-{message:'optimistic', prefixes:[], tags:[]},
-{message:'thoughtful', prefixes:[], tags:[]},
-{message:'contemplative', prefixes:[], tags:[]},
-{message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
-];
 
 // --- Event Listners ---
 circleBackground.addEventListener('click', () => openModal('settingsModel'));
@@ -318,6 +391,11 @@ startButton.addEventListener('click', start);
 startTimerButton.addEventListener('click', startTimer);
 stopTimerButton.addEventListener('click', stopTimer);
 timerCircle.addEventListener('animationend', stopTimer);
+exportDataButton.addEventListener('click', exportData);
+importDataButton?.addEventListener('click', () => hiddenFileInput?.click());
+hiddenFileInput?.addEventListener('change', importData);
+
+
 closeButtons.forEach(closeButton => {
   closeButton.onclick = () => closeModal();
 });
@@ -327,7 +405,7 @@ document.addEventListener("visibilitychange", () => {
     isVisible = false;
   } else {
     isVisible = true;
-    gainValue = 0.6;
+    gainValue = masterGainDefault;
   }
   master.gain.linearRampToValueAtTime(gainValue, ctx.currentTime + 2);
 });
@@ -356,13 +434,13 @@ function playTimerAlarm() {
   const interval = 1;
   const freqId = [0,0,1,2,3,0,4,0];
   for(let i=0; i<7; i++){
-    playTone(solfeggioFreqs[freqId[i]], now + (i * interval), 0.8, 'sine', 0, 0.8, true)
+    playTone(solfeggioFreqs[freqId[i]], now + (i * interval), 0.8, 'sine', 0, 0.5, true);
   }
 }
 
 function setAudio(){
   appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
-  playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8, appData.waveform, 0, 0.8);
+  playTone(solfeggioFreqs[appData.freqIndex], ctx.currentTime, 8, appData.waveform, 0, 0.5, false);
 }
 
 function setThemeColor() {
@@ -371,6 +449,7 @@ function setThemeColor() {
   //document.documentElement.style.setProperty('--app-theme-color', color);
   document.documentElement.setAttribute('data-theme', theme);
   metaThemeColor.setAttribute('content', color);
+  metaColorScheme.setAttribute('content', theme);
 }
 
 // Sets appData properties based on modal form values
@@ -386,6 +465,8 @@ function setDataFromModal(){
   appData.messageType = messageTypeSelect.value;
   appData.duration = Number(durationNumber.value);
   appData.timerMinutes= Number(timerMinutesNumber.value);
+  //appData.messages
+  
   if((audio !== appData.audio) && appData.audio) setAudio();
   if(darkMode !== appData.darkMode) setThemeColor();
   filterMessageList();
@@ -422,11 +503,41 @@ function resetDefaults(){
 }
 
 // --- Helper Functions ---
+function formatDate(date) { //toLocalDateString
+  date = date || new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function getTags(){
+  messageTypeSelect.innerHTML = '';
+  const tagList = ['all'];
+  appData.messages.forEach(message => {
+    message.tags.forEach(tag => {
+      if(!tagList.includes(tag)) tagList.push(tag);
+    });
+  });
+  tagList.sort();
+  tagList.forEach(tag => {
+    const option = document.createElement('option');
+    option.text = capitalizeFirstLetter(tag);
+    option.value = tag;
+    if(tag===appData.messageType) option.selected = true;
+    messageTypeSelect.add(option);
+  })
+}
+
 function filterMessageList(){
   if(appData.messageType === 'all'){
-    selectedMessages = messageList;
+    selectedMessages = appData.messages;
   }else{
-    selectedMessages = messageList.filter(m => m.tags.includes(appData.messageType));
+    selectedMessages = appData.messages.filter(m => m.tags.includes(appData.messageType));
   }
 }
 
@@ -445,9 +556,28 @@ function getRandomIndex(list, lastIndex, uniqueOnly=true){
   return index;
 }
 
+function createDots(number, id){
+  dots.innerHTML = '';
+  for(let i=0; i<number; i++){
+   const dot = document.createElement('div');
+   //dot.innerHTML = '&nbsp;'
+   if(i===id){
+     dot.className = 'dot-active'
+   }
+   dots.appendChild(dot);
+  }
+}
+
+function getCalculatedFontSize(){
+  const style = window.getComputedStyle(affirmationText, null).getPropertyValue('font-size');
+  return parseFloat(style);
+}
+
+//Multi line keep same color, next message, count, display dots to show index
 function getPrefix(){
+  appData.prefixIndex = getRandomIndex(appData.prefixes, appData.prefixIndex, false);
   const messagePrefixes = selectedMessages[appData.msgIndex].prefixes;
-  let prefix = prefixes[appData.prefixIndex]; //random from list
+  let prefix = appData.prefixes[appData.prefixIndex]; //random from list
   // Has prefixes assigned
   if(messagePrefixes.length>0){
     const assignedPrefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
@@ -459,36 +589,81 @@ function getPrefix(){
   return prefix;
 }
 
+const msg = {messageList:[], index:0, length:0, isMultiline:false};
+
+function setMsg(){  
+  const message = selectedMessages[appData.msgIndex];
+  msg.messageList = message.message.split('|');
+  msg.index = 0;
+  msg.length = msg.messageList.length;
+  msg.isMultiline = (message.multiline)? true:false;
+}
+
+function getMessage(){
+  let messageText;
+  let changeColor = false;
+  
+  //if the message index is greater or equal to the length find next
+  if(msg.index >= msg.length){
+    appData.msgIndex = getRandomIndex(selectedMessages, appData.msgIndex);
+    setMsg();
+    changeColor = true;
+  } 
+  
+  messageText = msg.messageList[msg.index];
+  msg.index++;
+ 
+  if(msg.isMultiline){
+    createDots(msg.length, msg.index-1);
+  }else{
+    const prefix = getPrefix();
+    messageText = `${prefix} ${messageText}`;
+  }
+
+  return {messageText, changeColor}
+}
+
 function changeText(){
+  /*
+  for(let i=0; i<10; i++){
+    const message = getMessage();
+    console.log('message text:', message.messageText, message.changeColor, msg);
+    
+  }
+  */
+  
+  dots.innerHTML = '';
   const seconds = appData.duration;
   const duration = seconds * 1000;
-  appData.msgIndex = getRandomIndex(selectedMessages, appData.msgIndex);
+  const overlapSeconds = 4;
   appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
   appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
-  appData.prefixIndex = getRandomIndex(prefixes, appData.prefixIndex, false);
-  //appData.msgIndex = selectedMessages.length-1; // For testing last
-  // Prefix
-  const prefix = getPrefix();
+
   // Message
-  const message = selectedMessages[appData.msgIndex].message;
-  affirmationText.innerHTML = `${prefix} ${message}`;
+  const message = getMessage();
+  affirmationText.innerHTML = message.messageText;
+
   // Color
-  const fillColor = fill[appData.fillIndex];
+  if(message.changeColor){
+    const fillColor = fill[appData.fillIndex];
+    circleBackground.style.background = fillColor;
+  }
   // Sound
   const frequency = solfeggioFreqs[appData.freqIndex];
   if(appData.voices===1){
-    playTone(frequency, ctx.currentTime, seconds+4, appData.waveform, 0, 0.8);
+    playTone(frequency, ctx.currentTime, seconds+overlapSeconds, appData.waveform, 0, toneGainDefault, false);
   }else{
-    playUnison(frequency, ctx.currentTime, seconds+4);
+    playUnison(frequency, ctx.currentTime, seconds+overlapSeconds);
   }
-  circleBackground.style.background = fillColor;
+
   // Loop
   const timeout = setTimeout(changeText, duration);
+ 
 }
 
 // --- Audio ---
 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
+// Compressor
 const compressor = ctx.createDynamicsCompressor();
 //const compset = {threshold:-24, knee:30, ratio:12, attack:0.003, release:0.25};
 const compset = {threshold:-30, knee:40, ratio:4, attack:0.01, release:0.25};
@@ -497,21 +672,21 @@ compressor.knee.setValueAtTime(compset.knee, ctx.currentTime);      // Softens t
 compressor.ratio.setValueAtTime(compset.ratio, ctx.currentTime);     // How much it squashes the peaks
 compressor.attack.setValueAtTime(compset.attack, ctx.currentTime); // Fast attack to catch peaks
 compressor.release.setValueAtTime(compset.release, ctx.currentTime); // Smooth release
-
+// Filter Not used
 const lowBoost = ctx.createBiquadFilter();
-lowBoost.type = "lowshelf";
+lowBoost.type = 'lowshelf';
 lowBoost.frequency.setValueAtTime(250, ctx.currentTime);
 lowBoost.gain.setValueAtTime(6, ctx.currentTime); // +6dB boost to lows
-
 // Master gain to control overall volume
 const master = ctx.createGain();
-master.gain.value = 0.6;
+master.gain.value = masterGainDefault;
 master.connect(ctx.destination);
 
 // Function to play a single tone with smooth fade in/out
-function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8, isAlarm=false) {
+function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=toneGainDefault, isAlarm=false) {
   const ramp = Math.min(duration/2, 2);
-  if((!appData.audio || !isVisible) && !isAlarm) return;
+  if((!appData.audio) && !isAlarm) return;
+  //if((!appData.audio || !isVisible) && !isAlarm) return;
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   gain.gain.setValueAtTime(0, startTime);
@@ -523,12 +698,11 @@ function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8
   osc.frequency.value = freq;
   osc.type = waveform;
   if(isMobile){
-    osc.connect(pan).connect(gain).connect(lowBoost).connect(compressor).connect(master);
+    //osc.connect(pan).connect(gain).connect(lowBoost).connect(compressor).connect(master);
+    osc.connect(pan).connect(gain).connect(compressor).connect(master);
   }else{
-    //No low boost
     osc.connect(pan).connect(gain).connect(compressor).connect(master);
   }
-  
   osc.start(startTime);
   osc.stop(startTime + duration);
   osc.onended = () => {
@@ -539,7 +713,7 @@ function playTone(freq, startTime, duration, waveform, panValue=0, gainValue=0.8
 // --- Multi Voice Unison ---
 function unison(baseFreq, numVoices, shapeType, curve, oscillator1, oscillator2){
   const detuneAmount = 0.015; // ±1.5% range
-  const gainValue = 0.8/numVoices;
+  const gainValue = toneGainDefault/numVoices;
   const voices = [];
   let shaped;
   // Generate voices
@@ -575,7 +749,7 @@ function playUnison(freq, startTime, duration){
   const curve = 2.5;
   const voiceList = unison(freq, appData.voices, appData.voicesShape, curve, appData.waveform, appData.waveform2);
   voiceList.forEach(voice => {
-    playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue);
+    playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue, false);
   });
 }
 
@@ -615,6 +789,39 @@ function showToast(message, type = 'info', duration = 3000) {
   clearTimeout(toastTimeout);
   toastTimeout = setTimeout(() => {toast.classList.remove('show');}, duration);
 }
+// --- Import Export ---
+function exportData() {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  const isoDate = formatDate(new Date());
+  a.href = URL.createObjectURL(blob);
+  a.download = `affirmable-${isoDate}.json`;
+  a.click();
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    console.log('reader');
+    try {
+      const data = JSON.parse(e.target.result);
+      console.log(data, data.messageList)
+      if(data.messageList){ //check for messageList
+        Object.assign(appData, data);
+        onLoad();
+        saveLocalStorage();
+        showToast('Imported!', 'success');
+      }else{
+        showToast('Sound Node data invalid format', 'error')
+      }
+    } catch (err) {
+      showToast('Failed to load file: Invalid format.');
+    }
+  };
+  reader.readAsText(file);
+}
 
 // --- Local Storage ---
 function saveLocalStorage(){
@@ -625,6 +832,8 @@ function saveLocalStorage(){
 function onLoad(){
   setModalValues();
   openModal('startModel');
+  //appData.msgIndex = selectedMessages.length-1; // For testing last
+  setMsg();
 }
 
 // Begin button as audio requires a user gesture
@@ -654,9 +863,61 @@ function loadLocalStorage(){
   }
 }
 
+function populateMessageSelector(){
+  dom.ctrl.messageSelector.innerHTML = '<option value=""></option>';
+  appData.messages.forEach((message,index) => {
+    const option = document.createElement('option');
+    let optionText = message.prefix + message.message.split('|')[0];
+    option.text = message.message.substring(0, 30).trim().replace(/\|/g,' ');  
+    option.value = index;
+    dom.ctrl.messageSelector.add(option);    
+  });  
+}
+
+function updateMessageLine(messageList, index){
+  if(!index) return;
+  if(messageList.length>=index){
+    dom.ctrl[`messageLine${index}Input`].value = messageList[index-1];
+  }else{
+    dom.ctrl[`messageLine${index}Input`].value = '';
+  }
+} 
+
+function messageSelectorChange(){
+  const id = dom.ctrl.messageSelector.value;
+  const message = appData.messages[id];
+  const messageList = message.message.split('|');  
+  updateMessageLine(messageList, 1);
+  updateMessageLine(messageList, 2);
+  updateMessageLine(messageList, 3);
+  dom.ctrl.tagsInput.value = message.tags;  
+  dom.ctrl.prefixesInput.value = message.prefixes;  
+}
+
+function initDomReferences(){
+  //Populate dom object with elements that match classnames e.g. dom-svg
+  const domList = ['div','el','ctrl','btn'];
+  domList.forEach(ref => {
+    document.querySelectorAll(`.dom-${ref}`).forEach(el =>{
+      dom[ref][el.id] = document.getElementById(el.id);
+    });
+  });
+  console.log(dom);
+  
+  // Event Listeners
+  dom.btn.messageSettingsButton.addEventListener('click', () => openModal('messageSettingsModel'));
+  dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
+  dom.ctrl.saveMessageButton.addEventListener('click', saveMessage);
+  dom.ctrl.deleteMessageButton.addEventListener('click', deleteMessage);
+  
+}
+
 function init(){
+  initDomReferences();
+  getTags();
   setIsMobile();
   loadLocalStorage();
+  populateMessageSelector();
 }
 
 init();
@@ -674,9 +935,6 @@ Modern Expanded
 285 Hz: Healing tissue and organs.
 963 Hz: Awakening perfect state/pineal activation.
 */
-
-
-
 </script>
 </body>
 </html>
