@@ -38,7 +38,7 @@ input{font-size: 12px; color: #333;}
 input[type=number]{width:3rem;}
 .main-container{display:flex; justify-content: center; height: 100vh; align-items: center; transition: background 1s ease; background: var(--app-theme-color)}
 .dark-mode-background-color{background: #414754;}
-/* Modal */
+/*  --- Modal --- */
 .modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
 .modal {font-family:sans-serif; background: var(--app-modal-background); color: var(--app-modal-color); padding:2rem 1rem 2rem 2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
 .modal h2 {margin-top:0; font-family: 'Nunito'; font-weight:normal; font-size: 1.5rem;}
@@ -48,7 +48,7 @@ input[type=number]{width:3rem;}
 .modal-label{width:80px; display:inline-block; vertical-align: middle;}
 .modal-start{background:none; box-shadow:none; padding:1rem;}
 .button-modal-container{text-align: center; margin-top:20px;}
-/* Button */
+/* --- Button --- */
 button {background: var(--app-button-background); color:#f1f1f1; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
 button:hover {background: var(--app-button-background-hover);}
 .modal .start-container{display:flex; justify-content:center; margin-bottom:0px; width:auto !important;}
@@ -62,7 +62,7 @@ button:hover {background: var(--app-button-background-hover);}
 .slider:before {position: absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:0.4s; border-radius:50%;}
 input:checked + .slider {background-color: var(--app-button-background);}
 input:checked + .slider:before {transform: translateX(25px);}
-/* Timer */
+/* --- Timer --- */
 .timer-circle{width:1px; height:1px; border-radius:50%; background:none; opacity:0.7; border:1px solid #ffffff; display: none; position:fixed;}
 .timer-container{position:fixed; top:0; left:0; height:100vh; width:100vw; display:flex; justify-content:center;  align-items:center; pointer-events: none;}
 .timer-animation {
@@ -84,7 +84,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 .toast.show {opacity: 1;  pointer-events: auto;}
 .hidden, .modal .hidden{display:none;}
 .dots{margin-top: 70vmin; position: fixed; display:flex;}
-.dots div{background:#f1f1f1; border-radius:50%; width:2vmin; height:2vmin; margin:0vmin 1vmin; opacity:0.5; transition: opacity 1s ease;}
+.dots .dot-standard{background:#f1f1f1; border-radius:50%; width:2vmin; height:2vmin; margin:0vmin 1vmin; opacity:0.5; transition: opacity 1s ease;}
 .dots .dot-active{opacity:0.8;}
 </style>
 </head>
@@ -94,7 +94,11 @@ input:checked + .slider:before {transform: translateX(25px);}
 <div id="mainContainer" class="main-container">
     <div id="circleBackground" class="circle-background">
       <div id="affirmationText" class="affirmation-text">click circle for settings</div>
-      <div id="dots" class="dots"></div>
+      <div id="dots" class="dots">
+        <div class="dot-standard"></div>
+        <div class="dot-standard"></div>
+        <div class="dot-standard"></div>
+      </div>
     </div>
 </div>
 
@@ -574,16 +578,22 @@ function getRandomIndex(list, lastIndex, uniqueOnly=true){
   return index;
 }
 
-function createDots(number, id){
-  dots.innerHTML = '';
-  for(let i=0; i<number; i++){
-   const dot = document.createElement('div');
-   //dot.innerHTML = '&nbsp;'
-   if(i===id){
-     dot.className = 'dot-active'
-   }
-   dots.appendChild(dot);
-  }
+function updateDots(number, id){ 
+  const dotElements = dots.querySelectorAll('.dot-standard');
+  dotElements.forEach((dot,index) => {
+    let classList 
+    if(id===index){
+      dot.classList.add('dot-active');
+    }else{
+      dot.classList.remove('dot-active');
+    }
+    // Hide all if single line or hide third if double
+    if(index >= number || number===1){
+      dot.classList.add('hidden');
+    }else{
+      dot.classList.remove('hidden');
+    }
+  });
 }
 
 function getCalculatedFontSize(){
@@ -631,13 +641,13 @@ function getMessage(){
   messageText = msg.messageList[msg.index];
   msg.index++;
   // Multiline
-  if(msg.length>1){
-    createDots(msg.length, msg.index-1);
-  }else{
+  updateDots(msg.length, msg.index-1);
+  //Add prefix if single line
+  if(msg.length===1){
     const prefix = getPrefix();
     messageText = `${prefix} ${messageText}`;
   }
-  return {messageText, changeColor}
+  return {messageText, changeColor, length:msg.length, index:msg.index}
 }
 
 function addWordsOneByOne(el, message, delay) {
@@ -666,13 +676,10 @@ function addWordsOneByOne(el, message, delay) {
 }
 
 function changeText(){
-  dots.innerHTML = '';
   affirmationText.innerHTML = '';
   const seconds = appData.duration;
-  const duration = seconds * 1000;
+  let duration = seconds * 1000;
   const overlapSeconds = 4;
-  appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
-  appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
 
   // Message
   const message = getMessage();
@@ -681,17 +688,23 @@ function changeText(){
 
   // Color
   if(message.changeColor){
+    appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
     const fillColor = fill[appData.fillIndex];
     circleBackground.style.background = fillColor;
   }
   // Sound
-  const frequency = solfeggioFreqs[appData.freqIndex];
-  if(appData.voices===1){
-    playTone(frequency, ctx.currentTime, seconds+overlapSeconds, appData.waveform, 0, toneGainDefault, false);
-  }else{
-    playUnison(frequency, ctx.currentTime, seconds+overlapSeconds);
+  if(message.index===1){
+    appData.freqIndex = getRandomIndex(solfeggioFreqs, appData.freqIndex);
+    const frequency = solfeggioFreqs[appData.freqIndex];
+    if(appData.voices===1){
+      playTone(frequency, ctx.currentTime, seconds+overlapSeconds, appData.waveform, 0, toneGainDefault, false);
+    }else{
+      playUnison(frequency, ctx.currentTime, seconds+overlapSeconds);
+    }
   }
+
   // Loop
+  duration = duration/message.length;
   const timeout = setTimeout(changeText, duration);
 }
 
