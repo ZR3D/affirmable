@@ -8,9 +8,27 @@
 <meta name="theme-color" content="#E6ECFA" />
 <meta name="color-scheme" content="dark" />
 <style>
-:root {--app-theme-color: #414754;}
-[data-theme="light"] {--app-theme-color: #E6ECFA;}
-[data-theme="dark"] {--app-theme-color: #414754;}
+:root {
+  --app-theme-color: #E6ECFA;
+  --app-modal-background: #f1f1f1;
+  --app-modal-color: #123456;
+  --app-button-background: #4f7a9d;
+  --app-button-background-hover: #556978;
+}
+[data-theme="light"] {
+  --app-theme-color: #E6ECFA;
+  --app-modal-background: #f1f1f1;
+  --app-modal-color: #123456;
+  --app-button-background: #4f7a9d;
+  --app-button-background-hover: #556978;
+}
+[data-theme="dark"] {
+  --app-theme-color: #414754;
+  --app-modal-background: #1a607c;
+  --app-modal-color: #f1f1f1;
+  --app-button-background: #1b354a;
+  --app-button-background-hover: #2e475a;  
+}
 @font-face {font-family: 'Nunito'; font-style: normal; font-weight: 400; src: url('fonts/nunito-regular.woff2') format('woff2');}
 *{box-sizing:border-box;}
 body{font-family: 'Nunito', sans-serif; font-size: 13px; padding: 0; margin: 0; background-color: var(--app-theme-color);}
@@ -22,7 +40,7 @@ input[type=number]{width:3rem;}
 .dark-mode-background-color{background: #414754;}
 /* Modal */
 .modal-backdrop {position: fixed; top:0; left:0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.4); display:none; align-items:center; justify-content:center; z-index: 1000;}
-.modal {font-family:sans-serif; background: #f1f1f1; color:#123456; padding:2rem 1rem 2rem 2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
+.modal {font-family:sans-serif; background: var(--app-modal-background); color: var(--app-modal-color); padding:2rem 1rem 2rem 2rem; border-radius:10px; max-width:400px; width:80%; box-shadow:0 10px 30px rgba(0,0,0,0.2); position: relative;}
 .modal h2 {margin-top:0; font-family: 'Nunito'; font-weight:normal; font-size: 1.5rem;}
 .modal .close {position:absolute; top:10px; right:14px; font-size:1.5rem; color:#999; cursor: pointer;}
 .modal .close:hover {color:#000;}
@@ -31,8 +49,8 @@ input[type=number]{width:3rem;}
 .modal-start{background:none; box-shadow:none; padding:1rem;}
 .button-modal-container{text-align: center; margin-top:20px;}
 /* Button */
-button {background:#4f7a9d; color:white; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
-button:hover {background: #5b778d;}
+button {background: var(--app-button-background); color:#f1f1f1; border:none; padding:0.4rem 0.6rem; border-radius:6px; cursor:pointer;}
+button:hover {background: var(--app-button-background-hover);}
 .modal .start-container{display:flex; justify-content:center; margin-bottom:0px; width:auto !important;}
 .start-button{width: 280px; height:280px; border-radius: 50%; font-family:'Nunito'; font-size:2rem; border:20px solid #f1f1f1;}
 .circle-background {display:flex; flex-direction:column; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;}
@@ -42,7 +60,7 @@ button:hover {background: #5b778d;}
 .switch input {opacity:0; width:0; height:0;}
 .slider {position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background-color:#ccc; transition:0.4s;  border-radius: 24px;}
 .slider:before {position: absolute; content:""; height:18px; width:18px; left:3px; bottom:3px; background-color:white; transition:0.4s; border-radius:50%;}
-input:checked + .slider {background-color: #4f7a9d;}
+input:checked + .slider {background-color: var(--app-button-background);}
 input:checked + .slider:before {transform: translateX(25px);}
 /* Timer */
 .timer-circle{width:1px; height:1px; border-radius:50%; background:none; opacity:0.7; border:1px solid #ffffff; display: none; position:fixed;}
@@ -59,13 +77,8 @@ input:checked + .slider:before {transform: translateX(25px);}
   0% {width:1px; height:1px; opacity: 0.5; border-width:2px;}
   100% {width:900px; height:900px; opacity:0; border-width:20px;}
 }
-.fade-in-word {
-  opacity: 0;
-  transition: opacity 0.7s ease;
-}
-.fade-in-word.show {
-  opacity: 1;
-}
+.fade-in-word {opacity: 0; transition: opacity 0.9s ease;}
+.fade-in-word.show {opacity: 0.8;}
 /* --- Toast --- */
 .toast{font-family: sans-serif; z-index: 1100;  position: fixed;  bottom: 0px;  left: 0px;  width: 100%;  margin: 0px;  padding: 10px 20px;  color: #ffffff;  font-size: 0.9rem;  transition: opacity 0.3s ease;  opacity: 0;  pointer-events: none; background:#12345678;}
 .toast.show {opacity: 1;  pointer-events: auto;}
@@ -130,6 +143,10 @@ input:checked + .slider:before {transform: translateX(25px);}
       <div>
         <label class="modal-label">Delete</label>
         <button id="deleteMessageButton" class="dom-btn">Delete Message</button>
+      </div>
+      <div class="button-modal-container">
+        <button class="close-button">Close</button>
+        <button id="openSettingsButton" class="dom-btn">Back to Settings</button>
       </div>
     </div>
 
@@ -342,7 +359,7 @@ const appData = {
     {message:'thoughtful', prefixes:[], tags:[]},
     {message:'contemplative', prefixes:[], tags:[]},
     {message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
-    {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['test','long'], multiline:true},
+    {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['test','long']},
   ],
     prefixes:['','be','feel','become','being'],
   };
@@ -506,6 +523,7 @@ function capitalizeFirstLetter(string) {
 
 function getTags(){
   messageTypeSelect.innerHTML = '';
+  dom.ctrl.tagSelect.innerHTML = '';
   const tagList = ['all'];
   appData.messages.forEach(message => {
     message.tags.forEach(tag => {
@@ -518,7 +536,7 @@ function getTags(){
     option.text = capitalizeFirstLetter(tag);
     option.value = tag;
     if(tag===appData.messageType) option.selected = true;
-    messageTypeSelect.add(option);    
+    messageTypeSelect.add(option);
     dom.ctrl.tagSelect.add(option.cloneNode(true));
   });
 }
@@ -530,6 +548,15 @@ function filterMessageList(){
     selectedMessages = appData.messages.filter(m => m.tags.includes(appData.messageType));
   }
   if(appData.msgIndex >= selectedMessages.length-1) appData.msgIndex = 0;
+  
+  //Fix
+  if(selectedMessages.length===0){
+    //Add one entry if empty
+    if(appData.messages.length===0) appData.messages.push({message:'tranquil', prefixes:['feel'], tags:['meditation']})
+    //Set to all if no matches for tag in selectedMessages
+    appData.messageType = 'all';
+    filterMessageList();
+  }
 }
 
 function setIsMobile(){
@@ -601,18 +628,15 @@ function getMessage(){
     setMsg();
     changeColor = true;
   }
-
   messageText = msg.messageList[msg.index];
   msg.index++;
-
-  //multiline
+  // Multiline
   if(msg.length>1){
     createDots(msg.length, msg.index-1);
   }else{
     const prefix = getPrefix();
     messageText = `${prefix} ${messageText}`;
   }
-
   return {messageText, changeColor}
 }
 
@@ -875,12 +899,15 @@ function loadLocalStorage(){
 
 function populateMessageSelector(){
   dom.ctrl.messageSelector.innerHTML = '<option value=""></option>';
-  appData.messages.forEach((message,index) => {
-    const option = document.createElement('option');
-    let optionText = message.prefix + message.message.split('|')[0];
-    option.text = message.message.substring(0, 30).trim().replace(/\|/g,' ');
-    option.value = index;
-    dom.ctrl.messageSelector.add(option);
+  const tagFilter = dom.ctrl.tagSelect.value;
+  appData.messages.forEach((message,index) => {    
+    if(tagFilter === 'all' || message.tags.includes(tagFilter)){
+      const option = document.createElement('option');
+      let optionText = message.prefix + message.message.split('|')[0];
+      option.text = message.message.substring(0, 30).trim().replace(/\|/g,' ');
+      option.value = index;
+      dom.ctrl.messageSelector.add(option);
+    }
   });
 }
 
@@ -968,6 +995,7 @@ function initDomReferences(){
   // Event Listeners  
   dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
   dom.ctrl.hiddenFileInput?.addEventListener('change', importData);
+  dom.ctrl.tagSelect.addEventListener('change', populateMessageSelector);
   // Buttons
   dom.btn.startButton.addEventListener('click', start);
   dom.btn.saveMessageButton.addEventListener('click', saveMessage);
@@ -978,7 +1006,8 @@ function initDomReferences(){
   dom.btn.importDataButton?.addEventListener('click', () => dom.ctrl.hiddenFileInput?.click()); 
   dom.btn.startTimerButton.addEventListener('click', startTimer);
   dom.btn.stopTimerButton.addEventListener('click', stopTimer);  
-  dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults); 
+  dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults);
+  dom.btn.openSettingsButton.addEventListener('click', () => openModal('settingsModel'));
 }
 
 function init(){
