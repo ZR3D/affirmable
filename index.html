@@ -373,17 +373,22 @@ const localStorageName = 'affirmableData';
 const affirmationText = document.getElementById('affirmationText');
 const mainContainer = document.getElementById('mainContainer');
 const circleBackground = document.getElementById('circleBackground');
+// Switch
 const audioSwitch = document.getElementById('audioSwitch');
+const darkModeSwitch = document.getElementById('darkModeSwitch');
+// Number
 const voicesNumber = document.getElementById('voicesNumber');
+const durationNumber = document.getElementById('durationNumber');
+const timerMinutesNumber = document.getElementById('timerMinutesNumber');
+// Select
 const voicesShapeSelect = document.getElementById('voicesShapeSelect');
 const waveformSelect = document.getElementById('waveformSelect');
 const waveformSelect2 = document.getElementById('waveformSelect2');
-const darkModeSwitch = document.getElementById('darkModeSwitch');
 const messageTypeSelect = document.getElementById('messageTypeSelect');
-const durationNumber = document.getElementById('durationNumber');
+// Query Select
 const closeButtons = document.querySelectorAll('.close-button');
 const toggleSwitches = document.querySelectorAll('.switch input');
-const timerMinutesNumber = document.getElementById('timerMinutesNumber');
+
 const timerContainer = document.getElementById('timerContainer');
 const timerCircle = document.getElementById('timerCircle');
 const dots = document.getElementById('dots');
@@ -391,7 +396,10 @@ const modal = document.getElementById('modal');
 const toast = document.getElementById('toast');
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
-const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',];
+const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',
+'#d9ac8a', '#5b8b93', '#d2bb6b', '#60493b', '#586b6f', '#c77949', '#2a2821', '#253d5d', '#b03b49', //japanese colors
+'#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
+];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 
 // --- Event Listners ---
