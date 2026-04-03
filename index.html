@@ -197,6 +197,13 @@ input:checked + .slider:before {transform: translateX(25px);}
       </label>
     </div>
     <div>
+      <label class="modal-label">Fullscreen</label>
+      <label class="switch">
+        <input id="fullscreenSwitch" class="dom-ctrl" type="checkbox">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div>
       <label class="modal-label">Messages</label>
       <select id="messageTypeSelect"></select>
       <button id="messageSettingsButton" class="dom-btn">Edit</button>
@@ -412,6 +419,7 @@ messageTypeSelect.addEventListener('change', setDataFromModal);
 durationNumber.addEventListener('input', setDataFromModal);
 audioSwitch.addEventListener('change', setDataFromModal);
 darkModeSwitch.addEventListener('change', setDataFromModal);
+
 timerMinutesNumber.addEventListener('input', setDataFromModal);
 timerCircle.addEventListener('animationend', stopTimer);
 
@@ -683,7 +691,17 @@ function addWordsOneByOne(el, message, delay) {
   setTimeout(showNextWord, delay);
 }
 
+
+function fadeOutText(){
+  console.log('fadeOutText');
+  document.querySelectorAll('.fade-in-word').forEach(word =>{    
+    word.classList.remove('show')
+  });  
+}
+
+
 function changeText(){
+  //console.log('changeText');
   affirmationText.innerHTML = '';
   const seconds = appData.duration;
   let duration = seconds * 1000;
@@ -713,7 +731,11 @@ function changeText(){
 
   // Loop
   duration = duration/message.length;
-  const timeout = setTimeout(changeText, duration);
+ 
+  const changeTextTimeout = setTimeout(changeText, duration);
+  //if(message.length===message.index){
+  //const fadeOutTextTimeout = setTimeout(fadeOutText, (duration*2)-500);
+  //}
 }
 
 // --- Audio ---
@@ -807,6 +829,41 @@ function playUnison(freq, startTime, duration){
     playTone(voice.frequency, startTime + voice.phaseOffset, duration, voice.oscillatorType, voice.panValue, voice.gainValue, false);
   });
 }
+
+
+// --- Full Screen ---
+
+
+
+  function openFullscreen() {
+    if (dom.root.requestFullscreen) {
+       dom.root.requestFullscreen();
+    } else if (dom.root.webkitRequestFullscreen) { /* Safari */
+      dom.root.webkitRequestFullscreen();
+    } else if (dom.root.msRequestFullscreen) { /* IE11 */
+       dom.root.msRequestFullscreen();
+    }
+  }
+
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+      document.msExitFullscreen();
+    }
+  }
+
+  function toggleFullscreen() {
+    if (dom.ctrl.fullscreenSwitch.checked) {
+      openFullscreen();      
+    }else{
+      closeFullscreen();
+    }
+  }
+
+
 
 // --- Modal ---
 function openModal(id) {
@@ -1013,10 +1070,12 @@ function initDomReferences(){
       dom[ref][el.id] = document.getElementById(el.id);
     });
   });
+  dom.root = document.documentElement;
   // Event Listeners  
   dom.ctrl.messageSelector.addEventListener('change', messageSelectorChange);
   dom.ctrl.hiddenFileInput?.addEventListener('change', importData);
   dom.ctrl.tagSelect.addEventListener('change', populateMessageSelector);
+  dom.ctrl.fullscreenSwitch.addEventListener('change', toggleFullscreen);
   // Buttons
   dom.btn.startButton.addEventListener('click', start);
   dom.btn.saveMessageButton.addEventListener('click', saveMessage);
