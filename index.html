@@ -53,8 +53,11 @@ button {background: var(--app-button-background); color:#f1f1f1; border:none; pa
 button:hover {background: var(--app-button-background-hover);}
 .modal .start-container{display:flex; justify-content:center; margin-bottom:0px; width:auto !important;}
 .start-button{width: 280px; height:280px; border-radius: 50%; font-family:'Nunito'; font-size:2rem; border:20px solid #f1f1f1;}
-.circle-background {display:flex; flex-direction:column; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;}
-.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;} /* hyphens:auto; */
+.circle-background {display:flex; flex-direction:column; background: #0ea5e9; transition: background 1s ease; cursor: pointer; width: 90vmin; height: 90vmin;border-radius: 50%; justify-content: center; align-items: center;
+   /* box-shadow: 0px 0px 30px #00000044; */
+  }
+.affirmation-text {font-family: 'Nunito', sans-serif; font-size: clamp(2rem, 14vmin, 6rem); color:#ffffff; opacity:0.5; text-align:center; user-select:none; padding: 20px;
+} /* hyphens:auto; */
 /* --- Toggle switch --- */
 .switch {position:relative; display:inline-block; width:50px; height:24px; vertical-align:top;}
 .switch input {opacity:0; width:0; height:0;}
@@ -222,6 +225,7 @@ input:checked + .slider:before {transform: translateX(25px);}
       <label class="modal-label">Data</label>
       <button id="importDataButton" class="dom-btn">Import</button>
       <button id="exportDataButton" class="dom-btn">Export</button>
+      <button id="originalDataButton" class="dom-btn">Original</button>
       <input id="hiddenFileInput" type="file" class="dom-ctrl hidden"/>
     </div>
     <div class="button-modal-container">
@@ -278,20 +282,20 @@ const appData = {
   freqIndex: 0,
   lastSaved: '2025-12-01',
   messages:[
-    {message:'ok', prefixes:['feel'], tags:['uplifting']},
-    {message:'relaxed', prefixes:[], tags:[]},
-    {message:'happy', prefixes:[], tags:['meditation']},
-    {message:'peaceful', prefixes:[], tags:['meditation']},
-    {message:'peace with all', prefixes:['be at'], tags:['meditation']},
+    {message:'ok', prefixes:['feel'], tags:['uplifting'], attr:{}},
+    {message:'relaxed', prefixes:['be','feel','become','being'], tags:[]},
+    {message:'happy', prefixes:['feel'], tags:['meditation']},
+    {message:'feel quietly peaceful', prefixes:['none'], tags:['meditation']},
+    {message:'be at peace with all', prefixes:['none'], tags:['meditation']},
     {message:'still', prefixes:[], tags:['meditation']},
     {message:'contented', prefixes:[], tags:['meditation']},
     {message:'tranquil', prefixes:[], tags:['meditation']},
-    {message:'free', prefixes:[], tags:[]},
-    {message:'calm', prefixes:['experience'], tags:['test']},
-    {message:'quiet', prefixes:['feel'], tags:['meditation']},
-    {message:'caring', prefixes:[], tags:[]},
+    {message:'free', prefixes:['feel'], tags:[]},
+    {message:'experience calm', prefixes:['none'], tags:[]},
+    {message:'quiet', prefixes:['feel','experience'], tags:['meditation']},
+    {message:'caring', prefixes:['be'], tags:[]},
     {message:'healthy', prefixes:['feel'], tags:[]},
-    {message:'generous', prefixes:[], tags:[]},
+    {message:'generous', prefixes:['feel'], tags:[]},
     {message:'kindness', prefixes:['experience'], tags:[]},
     {message:'accepting', prefixes:[], tags:[]},
     {message:'forgiving', prefixes:[], tags:[]},
@@ -365,15 +369,49 @@ const appData = {
     {message:'spacious', prefixes:['just be'], tags:[]},
     {message:'compassion', prefixes:['open to'], tags:[]},
     // New
-    {message:'positive', prefixes:[], tags:[]},
-    {message:'optimistic', prefixes:[], tags:[]},
+    {message:'positive', prefixes:['feel'], tags:[]},
+    {message:'optimistic', prefixes:['be'], tags:[]},
     {message:'thoughtful', prefixes:[], tags:[]},
     {message:'contemplative', prefixes:[], tags:[]},
     {message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
-    {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['test','long']},
-  ],
+    {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['long']},
+    {message:'be here now', prefixes:['none'], tags:['long']},
+    {message:'be true to yourself', prefixes:['none'], tags:['long']},
+    {message:'dont let the behavior|of others destroy|your inner peace', prefixes:[], tags:['long']},
+    {message:'embrace nature', prefixes:[], tags:[]},
+    {message:'be natural', prefixes:[], tags:[]},    
+    
+    {message:'listen to your heart', prefixes:['none'], tags:['pending']},
+    {message:'tune into bliss', prefixes:['none'], tags:['pending']},
+    {message:'embrace loving kindness', prefixes:['none'], tags:['pending']},
+    {message:'be content with everything', prefixes:['none'], tags:['pending']},
+    {message:'embrace nature', prefixes:['none'], tags:['pending']},
+    {message:'forgive others', prefixes:['none'], tags:['pending']},
+    {message:'be like water', prefixes:['none'], tags:['pending']},
+    {message:'feel complete', prefixes:['none'], tags:['pending']},
+    {message:'visualise loving compassion', prefixes:['none'], tags:['pending']},
+    {message:'be one with all', prefixes:['none'], tags:['pending']},
+    {message:'believe in yourself', prefixes:['none'], tags:['pending']},
+    {message:'be present with others', prefixes:['none'], tags:['pending']},
+    {message:'listen to your heart', prefixes:['none'], tags:['pending']},
+    {message:'feel connected', prefixes:['none'], tags:['pending']},
+    {message:'explore inner space', prefixes:['none'], tags:['pending']},
+    {message:'relax into being', prefixes:['none'], tags:['pending']},
+    {message:'experience the heart mind', prefixes:['none'], tags:['pending']},
+    {message:'the goal is|not to be bothered', prefixes:[], tags:['pending']},
+    {message:'have courage', prefixes:['none'], tags:['pending']},
+    {message:'dont have feelings |either way regardless', prefixes:[], tags:['pending']},
+    {message:'dont side|with yourself', prefixes:[], tags:['pending']},
+    {message:'may all beings have |happiness and the |causes of happiness', prefixes:['none'], tags:['pending']},
+  ],  
     prefixes:['','be','feel','become','being'],
+    fill:['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',
+    '#d9ac8a', '#5b8b93', '#d2bb6b', '#60493b', '#586b6f', '#c77949', '#2a2821', '#253d5d', '#b03b49', //japanese colors
+    '#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
+    ],
   };
+  
+const appDataClone = JSON.parse(JSON.stringify(appData));  
 const masterGainDefault = 0.6;
 const toneGainDefault = 0.6;
 const localStorageName = 'affirmableData';
@@ -403,10 +441,6 @@ const modal = document.getElementById('modal');
 const toast = document.getElementById('toast');
 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
 const metaColorScheme = document.querySelector('meta[name="color-scheme"]');
-const fill = ['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',
-'#d9ac8a', '#5b8b93', '#d2bb6b', '#60493b', '#586b6f', '#c77949', '#2a2821', '#253d5d', '#b03b49', //japanese colors
-'#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
-];
 const solfeggioFreqs = [396, 417, 528, 639, 741, 852, 174, 285, 963];
 
 // --- Event Listners ---
@@ -630,6 +664,7 @@ function getPrefix(){
       prefix = assignedPrefix;
     }
   }
+  if(prefix==='none') prefix = null; 
   return prefix;
 }
 
@@ -661,7 +696,7 @@ function getMessage(){
   //Add prefix if single line
   if(msg.length===1){
     const prefix = getPrefix();
-    messageText = `${prefix} ${messageText}`;
+    messageText = (prefix)? `${prefix} ${messageText}`:messageText;
   }
   return {messageText, changeColor, length:msg.length, index:msg.index}
 }
@@ -714,8 +749,8 @@ function changeText(){
 
   // Color
   if(message.changeColor){
-    appData.fillIndex = getRandomIndex(fill, appData.fillIndex);
-    const fillColor = fill[appData.fillIndex];
+    appData.fillIndex = getRandomIndex(appData.fill, appData.fillIndex);
+    const fillColor = appData.fill[appData.fillIndex];
     circleBackground.style.background = fillColor;
   }
   // Sound
@@ -1053,6 +1088,26 @@ function saveAsNewMessage(){
   saveMessage();
 }
 
+function restoreOriginalData(){
+  
+  
+    //console.log('del')
+    let text = "Remove all custom data and revert to original?\nEither OK or Cancel.";
+    if (confirm(text) == true) {
+      planitData = planitDataClone;
+      appData = appDataClone;
+      saveLocalStorage();
+      onLoad();
+    } else {
+      showToast('canceled');
+    }
+  
+  
+  
+  
+  
+}
+
 function deleteMessage(){
   appData.messages.splice(currentMessageId, 1);
   populateMessageSelector();
@@ -1088,6 +1143,7 @@ function initDomReferences(){
   dom.btn.stopTimerButton.addEventListener('click', stopTimer);  
   dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults);
   dom.btn.openSettingsButton.addEventListener('click', () => openModal('settingsModel'));
+  dom.btn.originalDataButton.addEventListener('click', restoreOriginalData);
 }
 
 function init(){
