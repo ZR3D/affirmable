@@ -225,7 +225,7 @@ input:checked + .slider:before {transform: translateX(25px);}
       <label class="modal-label">Data</label>
       <button id="importDataButton" class="dom-btn">Import</button>
       <button id="exportDataButton" class="dom-btn">Export</button>
-      <button id="originalDataButton" class="dom-btn">Original</button>
+      <button id="originalMessagesButton" class="dom-btn">Original</button>
       <input id="hiddenFileInput" type="file" class="dom-ctrl hidden"/>
     </div>
     <div class="button-modal-container">
@@ -380,7 +380,6 @@ const appData = {
     {message:'dont let the behavior|of others destroy|your inner peace', prefixes:[], tags:['long']},
     {message:'embrace nature', prefixes:[], tags:[]},
     {message:'be natural', prefixes:[], tags:[]},    
-    
     {message:'listen to your heart', prefixes:['none'], tags:['pending']},
     {message:'tune into bliss', prefixes:['none'], tags:['pending']},
     {message:'embrace loving kindness', prefixes:['none'], tags:['pending']},
@@ -403,6 +402,34 @@ const appData = {
     {message:'dont have feelings |either way regardless', prefixes:[], tags:['pending']},
     {message:'dont side|with yourself', prefixes:[], tags:['pending']},
     {message:'may all beings have |happiness and the |causes of happiness', prefixes:['none'], tags:['pending']},
+    {message:'stay grounded in the present', prefixes:['none'], tags:['pending']},
+    {message:'remain in the here and now', prefixes:['none'], tags:['pending']},
+    {message:'allow stillness', prefixes:['none'], tags:['pending']},
+    {message:'let yourself be elated', prefixes:['none'], tags:['pending']},
+    {message:'choose to be here ', prefixes:['none'], tags:['pending']},
+    {message:'let go and be free', prefixes:['none'], tags:['pending']},
+    {message:'allow yourself to feel relaxed', prefixes:['none'], tags:['pending']},
+    {message:'soften into relaxation', prefixes:['none'], tags:['pending']},
+    {message:'ease into the present moment', prefixes:['none'], tags:['pending']},
+    {message:'drift into', prefixes:['none'], tags:['pending']},
+    {message:'settle into', prefixes:['none'], tags:['pending']},
+    {message:'melt into contentment', prefixes:['none'], tags:['pending']},
+    {message:'notice silence', prefixes:['none'], tags:['pending']},
+    {message:'simply be content', prefixes:['none'], tags:['pending']},
+    {message:'just be here', prefixes:['none'], tags:['pending']},
+    {message:'rest into being', prefixes:['none'], tags:['pending']},
+    {message:'be aware of stillness', prefixes:['none'], tags:['pending']},
+    {message:'observe your existance', prefixes:['none'], tags:['pending']},
+    {message:'choose your path', prefixes:['none'], tags:['pending']},
+    {message:'gently be forgiving', prefixes:['none'], tags:['pending']},
+    {message:'now be', prefixes:['none'], tags:['pending']},
+    {message:'you are here', prefixes:['none'], tags:['pending']},
+    {message:'rest in equanimity', prefixes:['none'], tags:['pending']},
+    {message:'breathe into serenity', prefixes:['none'], tags:['pending']},
+    {message:'open your heart to joy', prefixes:['none'], tags:['pending']},
+    {message:'welcome to fourth density', prefixes:['none'], tags:['pending']},
+    {message:'return to stillness', prefixes:['none'], tags:['pending','xyz']},
+    {message:'come back to your center', prefixes:['none'], tags:['pending','xyz']},
   ],  
     prefixes:['','be','feel','become','being'],
     fill:['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',
@@ -410,6 +437,7 @@ const appData = {
     '#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
     ],
   };
+  
   
 const appDataClone = JSON.parse(JSON.stringify(appData));  
 const masterGainDefault = 0.6;
@@ -976,9 +1004,9 @@ function saveLocalStorage(){
   localStorage.setItem(localStorageName, json);
 }
 
-function onLoad(){
+function onLoad(showStartModal=true){
   setModalValues();
-  openModal('startModel');
+  if(showStartModal) openModal('startModel');
   setMsg();
   getTags();
 }
@@ -1088,24 +1116,16 @@ function saveAsNewMessage(){
   saveMessage();
 }
 
-function restoreOriginalData(){
-  
-  
-    //console.log('del')
+function restoreOriginalMessages(){
     let text = "Remove all custom data and revert to original?\nEither OK or Cancel.";
     if (confirm(text) == true) {
-      planitData = planitDataClone;
-      appData = appDataClone;
+      appData.messages = appDataClone.messages;
       saveLocalStorage();
-      onLoad();
+      onLoad(false);
+      closeModal();
     } else {
       showToast('canceled');
     }
-  
-  
-  
-  
-  
 }
 
 function deleteMessage(){
@@ -1143,7 +1163,7 @@ function initDomReferences(){
   dom.btn.stopTimerButton.addEventListener('click', stopTimer);  
   dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults);
   dom.btn.openSettingsButton.addEventListener('click', () => openModal('settingsModel'));
-  dom.btn.originalDataButton.addEventListener('click', restoreOriginalData);
+  dom.btn.originalMessagesButton.addEventListener('click', restoreOriginalMessages);
 }
 
 function init(){
