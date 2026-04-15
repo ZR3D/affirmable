@@ -93,7 +93,7 @@ input:checked + .slider:before {transform: translateX(25px);}
 </head>
 
 <body>
-
+<!-- Main -->
 <div id="mainContainer" class="main-container">
     <div id="circleBackground" class="circle-background">
       <div id="affirmationText" class="affirmation-text">click circle for settings</div>
@@ -104,13 +104,13 @@ input:checked + .slider:before {transform: translateX(25px);}
       </div>
     </div>
 </div>
-
+<!-- Modal -->
 <div class="modal-backdrop" id="modalBackdrop">
   <div id="modal" class="modal modal-start">
     <div id="startModel" class="modal-section start-container hidden">
       <button id="startButton" class="start-button dom-btn">Start</button>
     </div>
-
+    <!-- Message Settings-->
     <div id="messageSettingsModel" class="modal-section hidden">
       <span class="close close-button">&times;</span>
       <h2>Message Settings</h2>
@@ -156,7 +156,7 @@ input:checked + .slider:before {transform: translateX(25px);}
         <button id="openSettingsButton" class="dom-btn">Back to Settings</button>
       </div>
     </div>
-
+    <!-- App Settings-->
     <div id="settingsModel" class="modal-section hidden">
     <span class="close close-button">&times;</span>
     <h2>Settings</h2>
@@ -235,11 +235,11 @@ input:checked + .slider:before {transform: translateX(25px);}
     </div>
   </div>
 </div>
-
+<!-- Timer -->
 <div id="timerContainer" class="timer-container hidden">
   <div id="timerCircle" class="timer-circle">&nbsp;</div>
 </div>
-
+<!-- Toast -->
 <div id="toast" class="toast success"></div>
 
 <script>
@@ -310,7 +310,7 @@ const appData = {
     {message:'joyful', prefixes:['be'], tags:[]},
     {message:'patient', prefixes:['feel'], tags:[]},
     // From Chatty
-    {message:'compassionate', prefixes:[], tags:[]},
+    {message:'compass- ionate', prefixes:[], tags:[]},
     {message:'settled', prefixes:[], tags:[]},
     {message:'steady', prefixes:[], tags:[]},
     {message:'grounded', prefixes:[], tags:[]},
@@ -358,7 +358,7 @@ const appData = {
     {message:'go', prefixes:['let','letting'], tags:[]},
     {message:'with little', prefixes:['be content'], tags:[]},
     {message:'mindfulness', prefixes:['experience'], tags:['meditation']},
-    {message:'self harmony', prefixes:['experience'], tags:[]},
+    {message:'self harmony', prefixes:['live in'], tags:[]},
     {message:'with kindness', prefixes:['let go'], tags:['letting go', 'meditation']},
     {message:'present', prefixes:['stay'], tags:['meditation']},
     {message:'renewal', prefixes:['allow'], tags:[]},
@@ -378,8 +378,8 @@ const appData = {
     {message:'be here now', prefixes:['none'], tags:['long']},
     {message:'be true to yourself', prefixes:['none'], tags:['long']},
     {message:'dont let the behavior|of others destroy|your inner peace', prefixes:[], tags:['long']},
-    {message:'embrace nature', prefixes:[], tags:[]},
-    {message:'be natural', prefixes:[], tags:[]},    
+    {message:'embrace nature', prefixes:['none'], tags:[]},
+    {message:'be natural', prefixes:['none'], tags:[]},    
     {message:'listen to your heart', prefixes:['none'], tags:['pending']},
     {message:'tune into bliss', prefixes:['none'], tags:['pending']},
     {message:'embrace loving kindness', prefixes:['none'], tags:['pending']},
@@ -427,17 +427,49 @@ const appData = {
     {message:'rest in equanimity', prefixes:['none'], tags:['pending']},
     {message:'breathe into serenity', prefixes:['none'], tags:['pending']},
     {message:'open your heart to joy', prefixes:['none'], tags:['pending']},
-    {message:'welcome to fourth density', prefixes:['none'], tags:['pending']},
-    {message:'return to stillness', prefixes:['none'], tags:['pending','xyz']},
-    {message:'come back to your center', prefixes:['none'], tags:['pending','xyz']},
+    {message:'welcome to your life', prefixes:['none'], tags:['pending']},
+    {message:'return to stillness', prefixes:['none'], tags:['pending']},
+    {message:'come back to your center', prefixes:['none'], tags:['pending']},
+    {message:'awaken spiritually', prefixes:['none'], tags:['pending','xyz']},    
+    {message:'breathe deep', prefixes:['none'], tags:['pending']},
+    {message:'be kind', prefixes:['none'], tags:['pending']},
+    {message:'stay strong', prefixes:['none'], tags:['pending']},
+    {message:'love lights your path', prefixes:['none'], tags:['pending']},
+    {message:'believe in your dreams', prefixes:['none'], tags:['pending']},
+    {message:'focus on gratitude', prefixes:['none'], tags:['pending']},
+    {message:'smile inwardly', prefixes:['none'], tags:['pending']},
+    {message:'empower yourself', prefixes:['none'], tags:['pending']},
+    {message:'find inner peace', prefixes:['none'], tags:['pending']},
+    {message:'find peace within', prefixes:['none'], tags:['pending']},
+    {message:'pursue your dreams', prefixes:['none'], tags:['pending']},
+    {message:'trust in yourself', prefixes:['none'], tags:['pending']},
+    {message:'enjoy today', prefixes:['none'], tags:['pending']},
+    {message:'cultivate inner peace', prefixes:['none'], tags:['pending']},
+    {message:'focus on the present', prefixes:['none'], tags:['pending']},
+    {message:'practice mindfulness', prefixes:['none'], tags:['pending']},
+    {message:'seek intuative wisdom', prefixes:['none'], tags:['pending']},
+    {message:'live in harmony', prefixes:['none'], tags:['pending']},
+    {message:'let go of anger', prefixes:['none'], tags:['pending']},
+    {message:'find peace within', prefixes:['none'], tags:['pending']},
+    {message:'cultivate patience', prefixes:['none'], tags:['pending']},
+    {message:'embrace compassion', prefixes:['none'], tags:['pending']},
+    {message:'bathe in the light', prefixes:['none'], tags:['pending']},
+    {message:'reflect on kindness', prefixes:['none'], tags:['pending']},
+    {message:'what is given|is not lost', prefixes:['none'], tags:['pending']},
+    {message:'reflect inwardly', prefixes:['none'], tags:['pending']},
+    {message:'cultivate metta loving kindness', prefixes:['none'], tags:['pending']},
+    {message:'experience joy', prefixes:['none'], tags:['pending']},
+    {message:'experience well-being', prefixes:['none'], tags:['pending']},
+    {message:'feel your inner strength', prefixes:['none'], tags:['pending']},
+    {message:'appreciate your growth|from experiences', prefixes:['none'], tags:['pending']},
+    {message:'be excellent to yourself', prefixes:['none'], tags:['pending']},    
   ],  
     prefixes:['','be','feel','become','being'],
-    fill:['#2F4760','#662646','#205C3E','#C6832E','#3CC731', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#ef4444', '#ec4899', '#f43f5e',
+    fill:['#2F4760','#662646','#205C3E','#C6832E','#4bbf42', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d65695', '#f43f5e',
     '#d9ac8a', '#5b8b93', '#d2bb6b', '#60493b', '#586b6f', '#c77949', '#2a2821', '#253d5d', '#b03b49', //japanese colors
     '#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
     ],
   };
-  
   
 const appDataClone = JSON.parse(JSON.stringify(appData));  
 const masterGainDefault = 0.6;
@@ -754,14 +786,12 @@ function addWordsOneByOne(el, message, delay) {
   setTimeout(showNextWord, delay);
 }
 
-
 function fadeOutText(){
   console.log('fadeOutText');
   document.querySelectorAll('.fade-in-word').forEach(word =>{    
     word.classList.remove('show')
   });  
 }
-
 
 function changeText(){
   //console.log('changeText');
@@ -893,11 +923,7 @@ function playUnison(freq, startTime, duration){
   });
 }
 
-
 // --- Full Screen ---
-
-
-
   function openFullscreen() {
     if (dom.root.requestFullscreen) {
        dom.root.requestFullscreen();
@@ -925,8 +951,6 @@ function playUnison(freq, startTime, duration){
       closeFullscreen();
     }
   }
-
-
 
 // --- Modal ---
 function openModal(id) {
