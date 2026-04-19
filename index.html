@@ -213,7 +213,7 @@ input:checked + .slider:before {transform: translateX(25px);}
     </div>
     <div>
       <label class="modal-label">Duration</label>
-      <input id="durationNumber" type="number" value="5" min="1" >
+      <input id="durationNumber" type="number" value="10" min="3" >
     </div>
     <div>
       <label class="modal-label">Timer</label>
@@ -244,6 +244,8 @@ input:checked + .slider:before {transform: translateX(25px);}
 
 <script>
 // --- Insert Manifest if not running locally ---
+
+/*
 (function() {
   // Check if we are running on a web server
   const isWebProtocol = ['http:', 'https:'].includes(window.location.protocol);
@@ -252,6 +254,28 @@ input:checked + .slider:before {transform: translateX(25px);}
     link.rel = 'manifest';
     link.href = 'manifest.json';
     document.head.appendChild(link);
+  }
+})();
+*/
+
+(function() {
+  const isWebProtocol = ['http:', 'https:'].includes(window.location.protocol);
+  if (isWebProtocol) {
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = '/affirmable/manifest.json';
+    document.head.appendChild(link);
+
+    // 2. Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/affirmable/sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
+  } else {
+    console.log('Local file detected: skipping PWA features.');
   }
 })();
 
