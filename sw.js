@@ -1,4 +1,4 @@
-const CACHE_NAME = 'affirmable-app-v1';
+const CACHE_NAME = 'affirmable-app-v0.01';
 const ASSETS_TO_CACHE = [
   '/affirmable/',
   '/affirmable/index.html',

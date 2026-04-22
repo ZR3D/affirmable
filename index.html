@@ -46,6 +46,7 @@ input[type=number]{width:3rem;}
 .modal .close:hover {color:#000;}
 .modal div{margin-bottom:10px;}
 .modal-label{width:80px; display:inline-block; vertical-align: middle;}
+.modal-label-top{vertical-align:top;}
 .modal-start{background:none; box-shadow:none; padding:1rem;}
 .button-modal-container{text-align: center; margin-top:20px;}
 /* --- Button --- */
@@ -89,6 +90,11 @@ input:checked + .slider:before {transform: translateX(25px);}
 .dots{margin-top: 70vmin; position: fixed; display:flex;}
 .dots .dot-standard{background:#f1f1f1; border-radius:50%; width:2vmin; height:2vmin; margin:0vmin 1vmin; opacity:0.5; transition: opacity 1s ease;}
 .dots .dot-active{opacity:0.8;}
+.help-button{border-radius:50%; background:#dddddd; color:#333; padding:0.3rem; width:24px; height:24px;}
+.help-button:hover{background:#ffffff; color:#000;}
+.help-message{font-size: 0.7rem; opacity:0.8; padding: 5px 0px 0px 85px;}
+.message-preview{display: inline-block;}
+.message-preview div{background:#A7A488; color:#ffffff; border-radius:20px; padding:5px 10px; margin-bottom:5px; width:100%}
 </style>
 </head>
 
@@ -116,23 +122,32 @@ input:checked + .slider:before {transform: translateX(25px);}
       <h2>Message Settings</h2>
       <div>
         <label class="modal-label">Prefixes</label>
-        <input id="prefixesInput" type="text" class="dom-ctrl" placeholder="Prefixes comma separated">
+        <input id="prefixesInput" type="text" class="message-input dom-ctrl" placeholder="Prefixes comma separated" spellcheck="true">
+        <button id="prefixesHelpBtn" class="help-button dom-btn">?</button>
+        <div id="prefixesHelpText" class="help-message dom-ctrl hidden">Comma separated prefixes display randomly in front of Line 1 messages only when Line 2 and Line 3 are blank</div>
       </div>
       <div>
         <label class="modal-label">Line 1</label>
-        <input id="messageLine1Input" type="text" class="dom-ctrl" placeholder="Message line 1">
+        <input id="messageLine1Input" type="text" class="message-input dom-ctrl" placeholder="Message line 1" maxlength="35" spellcheck="true">
       </div>
       <div>
         <label class="modal-label">Line 2</label>
-        <input id="messageLine2Input" type="text" class="dom-ctrl" placeholder="Message line 2">
+        <input id="messageLine2Input" type="text" class="message-input dom-ctrl" placeholder="Message line 2" maxlength="35" spellcheck="true">
       </div>
       <div>
         <label class="modal-label">Line 3</label>
-        <input id="messageLine3Input" type="text" class="dom-ctrl" placeholder="Message line 3">
+        <input id="messageLine3Input" type="text" class="message-input dom-ctrl" placeholder="Message line 3" maxlength="35" spellcheck="true">
       </div>
       <div>
         <label class="modal-label">Tags</label>
         <input id="tagsInput" type="text" class="dom-ctrl" placeholder="Tags comma separated">
+        <button id="tagsHelpBtn" class="help-button dom-btn">?</button>
+        <div id="tagsHelpText" class="help-message dom-ctrl hidden">Tags add the message to existing or new groups. Filtering by group is available on the main settings panel</div>
+      </div>
+      <div>
+        <label class="modal-label modal-label-top">Preview</label>
+        <div id="messagePreview" class="message-preview dom-ctrl">
+        </div>
       </div>
       <div>
         <label class="modal-label">&nbsp;</label>
@@ -309,75 +324,75 @@ const appData = {
     {message:'ok', prefixes:['feel'], tags:['uplifting'], attr:{}},
     {message:'relaxed', prefixes:['be','feel','become','being'], tags:[]},
     {message:'happy', prefixes:['feel'], tags:['meditation']},
-    {message:'feel quietly peaceful', prefixes:['none'], tags:['meditation']},
-    {message:'be at peace with all', prefixes:['none'], tags:['meditation']},
-    {message:'still', prefixes:[], tags:['meditation']},
-    {message:'contented', prefixes:[], tags:['meditation']},
-    {message:'tranquil', prefixes:[], tags:['meditation']},
+    {message:'feel quietly peaceful', prefixes:[], tags:['meditation']},
+    {message:'be at peace with all', prefixes:[], tags:['meditation']},
+    {message:'still', prefixes:['','be','feel','become','being'], tags:['meditation']},
+    {message:'contented', prefixes:['','be','feel','become','being'], tags:['meditation']},
+    {message:'tranquil', prefixes:['','be','feel','become','being'], tags:['meditation']},
     {message:'free', prefixes:['feel'], tags:[]},
-    {message:'experience calm', prefixes:['none'], tags:[]},
+    {message:'experience calm', prefixes:[], tags:[]},
     {message:'quiet', prefixes:['feel','experience'], tags:['meditation']},
     {message:'caring', prefixes:['be'], tags:[]},
     {message:'healthy', prefixes:['feel'], tags:[]},
     {message:'generous', prefixes:['feel'], tags:[]},
     {message:'kindness', prefixes:['experience'], tags:[]},
-    {message:'accepting', prefixes:[], tags:[]},
-    {message:'forgiving', prefixes:[], tags:[]},
+    {message:'accepting', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'forgiving', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'loved', prefixes:['feel'], tags:[]},
-    {message:'loving', prefixes:[], tags:[]},
+    {message:'loving', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'good in yourself', prefixes:['feel'], tags:[]},
-    {message:'released', prefixes:[], tags:[]},
+    {message:'released', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'grateful', prefixes:['feel'], tags:[]},
-    {message:'unburdened', prefixes:[], tags:[]},
+    {message:'unburdened', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'easy', prefixes:['free and'], tags:[]},
-    {message:'floaty', prefixes:[], tags:[]},
+    {message:'floaty', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'joyful', prefixes:['be'], tags:[]},
     {message:'patient', prefixes:['feel'], tags:[]},
     // From Chatty
-    {message:'compass- ionate', prefixes:[], tags:[]},
-    {message:'settled', prefixes:[], tags:[]},
-    {message:'steady', prefixes:[], tags:[]},
-    {message:'grounded', prefixes:[], tags:[]},
-    {message:'centred', prefixes:[], tags:[]},
+    {message:'compass- ionate', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'settled', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'steady', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'grounded', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'centred', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'safe', prefixes:['feel'], tags:[]},
-    {message:'supported', prefixes:[], tags:[]},
-    {message:'held', prefixes:[], tags:[]},
-    {message:'embraced', prefixes:[], tags:[]},
-    {message:'balanced', prefixes:[], tags:[]},
-    {message:'at ease', prefixes:[], tags:[]},
+    {message:'supported', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'held', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'embraced', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'balanced', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'at ease', prefixes:['','be','feel','become','being'], tags:[]},
     // Letting go / spacious
-    {message:'open', prefixes:[], tags:['letting go']},
-    {message:'spacious', prefixes:[], tags:['letting go']},
-    {message:'light', prefixes:[], tags:['letting go']},
-    {message:'clear', prefixes:[], tags:['letting go']},
-    {message:'flowing', prefixes:[], tags:['letting go']},
-    {message:'expansive', prefixes:[], tags:['letting go']},
+    {message:'open', prefixes:['','be','feel','become','being'], tags:['letting go']},
+    {message:'spacious', prefixes:['','be','feel','become','being'], tags:['letting go']},
+    {message:'light', prefixes:['','be','feel','become','being'], tags:['letting go']},
+    {message:'clear', prefixes:['','be','feel','become','being'], tags:['letting go']},
+    {message:'flowing', prefixes:['','be','feel','become','being'], tags:['letting go']},
+    {message:'expansive', prefixes:['','be','feel','become','being'], tags:['letting go']},
     // Warm & emotional
-    {message:'warm', prefixes:[], tags:['warm']},
-    {message:'connected', prefixes:[], tags:['warm']},
-    {message:'gentle', prefixes:[], tags:['warm']},
-    {message:'nurtured', prefixes:[], tags:['warm']},
-    {message:'appreciative', prefixes:[], tags:['warm']},
-    {message:'fulfilled', prefixes:[], tags:['warm']},
-    {message:'whole', prefixes:[], tags:['warm']},
+    {message:'warm', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'connected', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'gentle', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'nurtured', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'appreciative', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'fulfilled', prefixes:['','be','feel','become','being'], tags:['warm']},
+    {message:'whole', prefixes:['','be','feel','become','being'], tags:['warm']},
     // Quietly uplifting
-    {message:'bright', prefixes:[], tags:['uplifting']},
-    {message:'refreshed', prefixes:[], tags:['uplifting']},
-    {message:'renewed', prefixes:[], tags:['uplifting']},
-    {message:'uplifted', prefixes:[], tags:['uplifting']},
-    {message:'inspired', prefixes:[], tags:['uplifting']},
-    {message:'hopeful', prefixes:[], tags:['uplifting']},
-    {message:'alive', prefixes:[], tags:['uplifting']},
-    {message:'awake', prefixes:[], tags:['uplifting']},
+    {message:'bright', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'refreshed', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'renewed', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'uplifted', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'inspired', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'hopeful', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'alive', prefixes:['','be','feel','become','being'], tags:['uplifting']},
+    {message:'awake', prefixes:['','be','feel','become','being'], tags:['uplifting']},
     // Mindfulness / awareness
-    {message:'energised', prefixes:[], tags:[]},
-    {message:'aware', prefixes:[], tags:['meditation']},
+    {message:'energised', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'aware', prefixes:['','be','feel','become','being'], tags:['meditation']},
     {message:'mindful', prefixes:['all','remain'], tags:['meditation']},
-    {message:'attentive', prefixes:[], tags:['meditation']},
+    {message:'attentive', prefixes:['','be','feel','become','being'], tags:['meditation']},
     {message:'in gently', prefixes:['breathe'], tags:['meditation']},
     {message:'the breath', prefixes:['focus on'], tags:['meditation']},
-    {message:'curious', prefixes:[], tags:[]},
-    {message:'receptive', prefixes:[], tags:[]},
+    {message:'curious', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'receptive', prefixes:['','be','feel','become','being'], tags:[]},
     // Multi line
     {message:'go', prefixes:['let','letting'], tags:[]},
     {message:'with little', prefixes:['be content'], tags:[]},
@@ -395,100 +410,99 @@ const appData = {
     // New
     {message:'positive', prefixes:['feel'], tags:[]},
     {message:'optimistic', prefixes:['be'], tags:[]},
-    {message:'thoughtful', prefixes:[], tags:[]},
-    {message:'contemplative', prefixes:[], tags:[]},
+    {message:'thoughtful', prefixes:['','be','feel','become','being'], tags:[]},
+    {message:'contemplative', prefixes:['','be','feel','become','being'], tags:[]},
     {message:'bliss', prefixes:['all','tune into','be at one with','center into'], tags:[]},
     {message:'free your mind|your mind is all stories|let go of thinking', prefixes:[], tags:['long']},
-    {message:'be here now', prefixes:['none'], tags:['long']},
-    {message:'be true to yourself', prefixes:['none'], tags:['long']},
+    {message:'be here now', prefixes:[], tags:['long']},
+    {message:'be true to yourself', prefixes:[], tags:['long']},
     {message:'dont let the behavior|of others destroy|your inner peace', prefixes:[], tags:['long']},
-    {message:'embrace nature', prefixes:['none'], tags:[]},
-    {message:'be natural', prefixes:['none'], tags:[]},    
-    {message:'listen to your heart', prefixes:['none'], tags:['pending']},
-    {message:'tune into bliss', prefixes:['none'], tags:['pending']},
-    {message:'embrace loving kindness', prefixes:['none'], tags:['pending']},
-    {message:'be content with everything', prefixes:['none'], tags:['pending']},
-    {message:'embrace nature', prefixes:['none'], tags:['pending']},
-    {message:'forgive others', prefixes:['none'], tags:['pending']},
-    {message:'be like water', prefixes:['none'], tags:['pending']},
-    {message:'feel complete', prefixes:['none'], tags:['pending']},
-    {message:'visualise loving compassion', prefixes:['none'], tags:['pending']},
-    {message:'be one with all', prefixes:['none'], tags:['pending']},
-    {message:'believe in yourself', prefixes:['none'], tags:['pending']},
-    {message:'be present with others', prefixes:['none'], tags:['pending']},
-    {message:'listen to your heart', prefixes:['none'], tags:['pending']},
-    {message:'feel connected', prefixes:['none'], tags:['pending']},
-    {message:'explore inner space', prefixes:['none'], tags:['pending']},
-    {message:'relax into being', prefixes:['none'], tags:['pending']},
-    {message:'experience the heart mind', prefixes:['none'], tags:['pending']},
-    {message:'the goal is|not to be bothered', prefixes:[], tags:['pending']},
-    {message:'have courage', prefixes:['none'], tags:['pending']},
-    {message:'dont have feelings |either way regardless', prefixes:[], tags:['pending']},
-    {message:'dont side|with yourself', prefixes:[], tags:['pending']},
-    {message:'may all beings have |happiness and the |causes of happiness', prefixes:['none'], tags:['pending']},
-    {message:'stay grounded in the present', prefixes:['none'], tags:['pending']},
-    {message:'remain in the here and now', prefixes:['none'], tags:['pending']},
-    {message:'allow stillness', prefixes:['none'], tags:['pending']},
-    {message:'let yourself be elated', prefixes:['none'], tags:['pending']},
-    {message:'choose to be here ', prefixes:['none'], tags:['pending']},
-    {message:'let go and be free', prefixes:['none'], tags:['pending']},
-    {message:'allow yourself to feel relaxed', prefixes:['none'], tags:['pending']},
-    {message:'soften into relaxation', prefixes:['none'], tags:['pending']},
-    {message:'ease into the present moment', prefixes:['none'], tags:['pending']},
-    {message:'drift into', prefixes:['none'], tags:['pending']},
-    {message:'settle into', prefixes:['none'], tags:['pending']},
-    {message:'melt into contentment', prefixes:['none'], tags:['pending']},
-    {message:'notice silence', prefixes:['none'], tags:['pending']},
-    {message:'simply be content', prefixes:['none'], tags:['pending']},
-    {message:'just be here', prefixes:['none'], tags:['pending']},
-    {message:'rest into being', prefixes:['none'], tags:['pending']},
-    {message:'be aware of stillness', prefixes:['none'], tags:['pending']},
-    {message:'observe your existance', prefixes:['none'], tags:['pending']},
-    {message:'choose your path', prefixes:['none'], tags:['pending']},
-    {message:'gently be forgiving', prefixes:['none'], tags:['pending']},
-    {message:'now be', prefixes:['none'], tags:['pending']},
-    {message:'you are here', prefixes:['none'], tags:['pending']},
-    {message:'rest in equanimity', prefixes:['none'], tags:['pending']},
-    {message:'breathe into serenity', prefixes:['none'], tags:['pending']},
-    {message:'open your heart to joy', prefixes:['none'], tags:['pending']},
-    {message:'welcome to your life', prefixes:['none'], tags:['pending']},
-    {message:'return to stillness', prefixes:['none'], tags:['pending']},
-    {message:'come back to your center', prefixes:['none'], tags:['pending']},
-    {message:'awaken spiritually', prefixes:['none'], tags:['pending','xyz']},    
-    {message:'breathe deep', prefixes:['none'], tags:['pending']},
-    {message:'be kind', prefixes:['none'], tags:['pending']},
-    {message:'stay strong', prefixes:['none'], tags:['pending']},
-    {message:'love lights your path', prefixes:['none'], tags:['pending']},
-    {message:'believe in your dreams', prefixes:['none'], tags:['pending']},
-    {message:'focus on gratitude', prefixes:['none'], tags:['pending']},
-    {message:'smile inwardly', prefixes:['none'], tags:['pending']},
-    {message:'empower yourself', prefixes:['none'], tags:['pending']},
-    {message:'find inner peace', prefixes:['none'], tags:['pending']},
-    {message:'find peace within', prefixes:['none'], tags:['pending']},
-    {message:'pursue your dreams', prefixes:['none'], tags:['pending']},
-    {message:'trust in yourself', prefixes:['none'], tags:['pending']},
-    {message:'enjoy today', prefixes:['none'], tags:['pending']},
-    {message:'cultivate inner peace', prefixes:['none'], tags:['pending']},
-    {message:'focus on the present', prefixes:['none'], tags:['pending']},
-    {message:'practice mindfulness', prefixes:['none'], tags:['pending']},
-    {message:'seek intuative wisdom', prefixes:['none'], tags:['pending']},
-    {message:'live in harmony', prefixes:['none'], tags:['pending']},
-    {message:'let go of anger', prefixes:['none'], tags:['pending']},
-    {message:'find peace within', prefixes:['none'], tags:['pending']},
-    {message:'cultivate patience', prefixes:['none'], tags:['pending']},
-    {message:'embrace compassion', prefixes:['none'], tags:['pending']},
-    {message:'bathe in the light', prefixes:['none'], tags:['pending']},
-    {message:'reflect on kindness', prefixes:['none'], tags:['pending']},
-    {message:'what is given|is not lost', prefixes:['none'], tags:['pending']},
-    {message:'reflect inwardly', prefixes:['none'], tags:['pending']},
-    {message:'cultivate metta loving kindness', prefixes:['none'], tags:['pending']},
-    {message:'experience joy', prefixes:['none'], tags:['pending']},
-    {message:'experience well-being', prefixes:['none'], tags:['pending']},
-    {message:'feel your inner strength', prefixes:['none'], tags:['pending']},
-    {message:'appreciate your growth|from experiences', prefixes:['none'], tags:['pending']},
-    {message:'be excellent to yourself', prefixes:['none'], tags:['pending']},    
+    {message:'embrace nature', prefixes:[], tags:[]},
+    {message:'be natural', prefixes:[], tags:[]},    
+    {message:'listen to your heart', prefixes:[], tags:[]},
+    {message:'tune into bliss', prefixes:[], tags:[]},
+    {message:'embrace loving kindness', prefixes:[], tags:[]},
+    {message:'be content with everything', prefixes:[], tags:[]},
+    {message:'embrace nature', prefixes:[], tags:[]},
+    {message:'forgive others', prefixes:[], tags:[]},
+    {message:'be like water', prefixes:[], tags:[]},
+    {message:'feel complete', prefixes:[], tags:[]},
+    {message:'visualise loving compassion', prefixes:[], tags:[]},
+    {message:'be one with all', prefixes:[], tags:[]},
+    {message:'believe in yourself', prefixes:[], tags:[]},
+    {message:'be present with others', prefixes:[], tags:[]},
+    {message:'listen to your heart', prefixes:[], tags:[]},
+    {message:'feel connected', prefixes:[], tags:[]},
+    {message:'explore inner space', prefixes:[], tags:[]},
+    {message:'relax into being', prefixes:[], tags:[]},
+    {message:'experience the heart mind', prefixes:[], tags:[]},
+    {message:'the goal is|not to be bothered', prefixes:[], tags:[]},
+    {message:'have courage', prefixes:[], tags:[]},
+    {message:'dont have feelings |either way regardless', prefixes:[], tags:[]},
+    {message:'dont side|with yourself', prefixes:[], tags:[]},
+    {message:'may all beings have |happiness and the |causes of happiness', prefixes:[], tags:[]},
+    {message:'stay grounded in the present', prefixes:[], tags:[]},
+    {message:'remain in the here and now', prefixes:[], tags:[]},
+    {message:'allow stillness', prefixes:[], tags:[]},
+    {message:'let yourself be elated', prefixes:[], tags:[]},
+    {message:'choose to be here ', prefixes:[], tags:[]},
+    {message:'let go and be free', prefixes:[], tags:[]},
+    {message:'allow yourself to feel relaxed', prefixes:[], tags:[]},
+    {message:'soften into relaxation', prefixes:[], tags:[]},
+    {message:'ease into the present moment', prefixes:[], tags:[]},
+    {message:'drift into', prefixes:[], tags:[]},
+    {message:'settle into', prefixes:[], tags:[]},
+    {message:'melt into contentment', prefixes:[], tags:[]},
+    {message:'notice silence', prefixes:[], tags:[]},
+    {message:'simply be content', prefixes:[], tags:[]},
+    {message:'just be here', prefixes:[], tags:[]},
+    {message:'rest into being', prefixes:[], tags:[]},
+    {message:'be aware of stillness', prefixes:[], tags:[]},
+    {message:'observe your existance', prefixes:[], tags:[]},
+    {message:'choose your path', prefixes:[], tags:[]},
+    {message:'gently be forgiving', prefixes:[], tags:[]},
+    {message:'now be', prefixes:[], tags:[]},
+    {message:'you are here', prefixes:[], tags:[]},
+    {message:'rest in equanimity', prefixes:[], tags:[]},
+    {message:'breathe into serenity', prefixes:[], tags:[]},
+    {message:'open your heart to joy', prefixes:[], tags:[]},
+    {message:'welcome to your life', prefixes:[], tags:[]},
+    {message:'return to stillness', prefixes:[], tags:[]},
+    {message:'come back to your center', prefixes:[], tags:[]},
+    {message:'awaken spiritually', prefixes:[], tags:[]},    
+    {message:'breathe deep', prefixes:[], tags:[]},
+    {message:'be kind', prefixes:[], tags:[]},
+    {message:'stay strong', prefixes:[], tags:[]},
+    {message:'love lights your path', prefixes:[], tags:[]},
+    {message:'believe in your dreams', prefixes:[], tags:[]},
+    {message:'focus on gratitude', prefixes:[], tags:[]},
+    {message:'smile inwardly', prefixes:[], tags:[]},
+    {message:'empower yourself', prefixes:[], tags:[]},
+    {message:'find inner peace', prefixes:[], tags:[]},
+    {message:'find peace within', prefixes:[], tags:[]},
+    {message:'pursue your dreams', prefixes:[], tags:[]},
+    {message:'trust in yourself', prefixes:[], tags:[]},
+    {message:'enjoy today', prefixes:[], tags:[]},
+    {message:'cultivate inner peace', prefixes:[], tags:[]},
+    {message:'focus on the present', prefixes:[], tags:[]},
+    {message:'practice mindfulness', prefixes:[], tags:[]},
+    {message:'seek intuative wisdom', prefixes:[], tags:[]},
+    {message:'live in harmony', prefixes:[], tags:[]},
+    {message:'let go of anger', prefixes:[], tags:[]},
+    {message:'find peace within', prefixes:[], tags:[]},
+    {message:'cultivate patience', prefixes:[], tags:[]},
+    {message:'embrace compassion', prefixes:[], tags:[]},
+    {message:'bathe in the light', prefixes:[], tags:[]},
+    {message:'reflect on kindness', prefixes:[], tags:[]},
+    {message:'what is given|is not lost', prefixes:[], tags:[]},
+    {message:'reflect inwardly', prefixes:[], tags:[]},
+    {message:'cultivate metta loving kindness', prefixes:[], tags:[]},
+    {message:'experience joy', prefixes:[], tags:[]},
+    {message:'experience well-being', prefixes:[], tags:[]},
+    {message:'feel your inner strength', prefixes:[], tags:[]},
+    {message:'appreciate your growth|from experiences', prefixes:[], tags:[]},
+    {message:'be excellent to yourself', prefixes:[], tags:[]},    
   ],  
-    prefixes:['','be','feel','become','being'],
     fill:['#2F4760','#662646','#205C3E','#C6832E','#4bbf42', '#64748b', '#6b7280', '#71717a', '#737373', '#78716c', '#ef4444', '#f97316', '#f59e0b', '#eab308', '#84cc16', '#22c55e', '#10b981', '#14b8a6', '#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7', '#d65695', '#f43f5e',
     '#d9ac8a', '#5b8b93', '#d2bb6b', '#60493b', '#586b6f', '#c77949', '#2a2821', '#253d5d', '#b03b49', //japanese colors
     '#606c5a','#95a9ab','#917f6c','#a69485','#b9b99d',
@@ -737,18 +751,13 @@ function getCalculatedFontSize(){
 
 //Multi line keep same color, next message, count, display dots to show index
 function getPrefix(){
-  appData.prefixIndex = getRandomIndex(appData.prefixes, appData.prefixIndex, false);
+  let prefix = null;
   const messagePrefixes = selectedMessages[appData.msgIndex].prefixes;
-  let prefix = appData.prefixes[appData.prefixIndex]; //random from list
   // Has prefixes assigned
   if(messagePrefixes.length>0){
-    const assignedPrefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
-    //If assignedPrefix returns 'all' then use random from prefixes list above  else
-    if(assignedPrefix!=='all'){
-      prefix = assignedPrefix;
-    }
+    prefix = messagePrefixes[Math.floor(Math.random() * messagePrefixes.length)];
   }
-  if(prefix==='none') prefix = null; 
+  if(prefix==='') prefix = null; 
   return prefix;
 }
 
@@ -1119,6 +1128,7 @@ function messageSelectorChange(){
   updateMessageLine(messageList, 3);
   dom.ctrl.tagsInput.value = message.tags;
   dom.ctrl.prefixesInput.value = message.prefixes;
+  updateMessagePreview();
 }
 
 function getCommaSeperated(str){
@@ -1185,6 +1195,28 @@ function deleteMessage(){
   showToast('Message Deleted');
 }
 
+function updateMessagePreview(){
+  dom.ctrl.messagePreview.innerHTML = '';
+  const messages = [];
+
+  for(let i=1; i<4; i++){
+    const message = dom.ctrl[`messageLine${i}Input`].value;
+    if(message!=''){
+      messages.push(message.toLowerCase());
+    }
+  }
+  const prefixes = (messages.length>1)? ['']:dom.ctrl.prefixesInput.value.split(',');
+
+  messages.forEach(message => {
+    prefixes.forEach(prefix => {
+      const div = document.createElement('div');
+      div.textContent = (`${prefix} ${message}`).trim();
+      dom.ctrl.messagePreview.appendChild(div); 
+    });
+  });
+}
+
+
 function initDomReferences(){
   //Populate dom object with elements that match classnames e.g. dom-svg
   const domList = ['div','el','ctrl','btn'];
@@ -1199,6 +1231,11 @@ function initDomReferences(){
   dom.ctrl.hiddenFileInput?.addEventListener('change', importData);
   dom.ctrl.tagSelect.addEventListener('change', populateMessageSelector);
   dom.ctrl.fullscreenSwitch.addEventListener('change', toggleFullscreen);
+
+  const messageInputs  = document.querySelectorAll('.message-input');
+  messageInputs.forEach(el => el.addEventListener('input', updateMessagePreview));  
+  
+  
   // Buttons
   dom.btn.startButton.addEventListener('click', start);
   dom.btn.saveMessageButton.addEventListener('click', saveMessage);
@@ -1212,6 +1249,12 @@ function initDomReferences(){
   dom.btn.resetDefaultsButton.addEventListener('click', resetDefaults);
   dom.btn.openSettingsButton.addEventListener('click', () => openModal('settingsModel'));
   dom.btn.originalMessagesButton.addEventListener('click', restoreOriginalMessages);
+  dom.btn.prefixesHelpBtn.addEventListener('click', () => dom.ctrl.prefixesHelpText.classList.toggle('hidden'));
+  dom.btn.tagsHelpBtn.addEventListener('click', () => dom.ctrl.tagsHelpText.classList.toggle('hidden'));
+  
+  
+  
+  
 }
 
 function init(){
@@ -1232,9 +1275,9 @@ Original Six Frequencies
 741 Hz: Expression and Solutions
 852 Hz: Returning to Spiritual Order
 Modern Expanded
-174 Hz: Relieving pain and stress.
-285 Hz: Healing tissue and organs.
-963 Hz: Awakening perfect state/pineal activation.
+174 Hz: Relieving pain and stress
+285 Hz: Healing tissue and organs
+963 Hz: Awakening perfect state/pineal activation
 */
 </script>
 </body>
