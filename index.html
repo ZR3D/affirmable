@@ -1207,10 +1207,14 @@ function updateMessagePreview(){
   }
   const prefixes = (messages.length>1)? ['']:dom.ctrl.prefixesInput.value.split(',');
 
-  messages.forEach(message => {
+
+
+  messages.forEach(message => {    
     prefixes.forEach(prefix => {
+      const fillColor = appData.fill[Math.floor(Math.random() * appData.fill.length)];
       const div = document.createElement('div');
       div.textContent = (`${prefix} ${message}`).trim();
+      if((messages.length===1)) div.style.background = fillColor;
       dom.ctrl.messagePreview.appendChild(div); 
     });
   });
